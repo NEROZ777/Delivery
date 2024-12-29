@@ -18,4 +18,4 @@ Route::post('/logout', [AuthController::class, 'logout'
 Route::post('/upload_profile_image', [UserInfo::class, 'uploadImage'])->middleware('auth:sanctum');
 Route::post('/products/store', [ProductController::class, 'store']);
 Route::post('/products/updata', [ProductController::class, 'updata']);
-Route::middleware('auth:api')->post('/add-to-cart', [CartController::class, 'addToCart']);
+Route::post('cart/add', [CartController::class, 'addToCart']);
