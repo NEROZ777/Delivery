@@ -15,4 +15,5 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'
 ])->middleware('auth:sanctum');
 Route::post('/upload_profile_image', [UserInfo::class, 'uploadImage'])->middleware('auth:sanctum');
-Route::post('/products', [ProductController::class, 'store']);
+Route::post('/products/store', [ProductController::class, 'store']);
+Route::post('/products/updata', [ProductController::class, 'updata']);
