@@ -12,7 +12,7 @@ class StoreController extends Controller implements HasMiddleware
     // This function to make this functions autherisable 
     public static function middleware() {
         return [
-            new Middleware('auth:sanctum', except: [])
+            new Middleware('auth:sanctum', except: ['showAllStores'])
         ];
     }
 
@@ -37,5 +37,43 @@ class StoreController extends Controller implements HasMiddleware
                 'message' => $e->getMessage()
             ], 403);
         }
+    }
+
+    // This function to show the all stores
+    public function showAllStores(Request $request){
+        try {
+            $stores = Store::all();
+    
+            return response([
+                $stores
+            ], 200);
+        } catch(\Exception $e) {
+            return response([
+                'error' => 'something happend with stores showing',
+                'message' => $e->getMessage()
+            ], 403);
+        }
+    }
+
+    // This function to update an excesting store
+    public function storeUpdate(Request $request) {
+        $fields = $request->validate([
+            'store_id' => 'required',
+            'store_name' => 'required',
+            'store_type' => 'required',
+            'about' => 'required'
+        ]);
+
+        $store = STORE::where('id', $fields['store_id'])->first();
+
+        if(!$store){
+            return response([
+                'error' => 'store not found'
+            ], 403);
+        }
+
+        $store->update($fields);
+
+        return response([], 200);
     }
 }
