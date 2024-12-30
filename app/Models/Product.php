@@ -14,4 +14,8 @@ class Product extends Model
         'price',
         'quantity',
     ];
+
+    public function store() {
+        return $this->belongsTo('App/Model/Store');
+    }
 }
