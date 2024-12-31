@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Product extends Model
 {
+<<<<<<< HEAD
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
@@ -23,3 +24,23 @@ class Product extends Model
         return $this->belongsTo('App/Model/Store');
     }
 }
+=======
+    
+        // use HasFactory;
+        protected $fillable = [
+            'name',        
+            'description', 
+            'price',       
+            'quantity',     
+            'image',       
+        ];
+    
+       
+        public function cartItems()
+        {
+            return $this->belongsToMany(Cart::class)->withPivot('quantity');
+        }
+    }
+    
+
+>>>>>>> 29879969736225a0a703cef765ec88530dbcfaeb
