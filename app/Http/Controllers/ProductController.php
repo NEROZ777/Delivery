@@ -10,7 +10,7 @@ use Illuminate\Routing\Controllers\Middleware;
 
 class ProductController extends Controller implements HasMiddleware
 {
-    // This function to make this functions authorisable 
+    // This function to make this functions authorisable.
     public static function middleware() {
         return [
             new Middleware('auth:sanctum', except: [])
