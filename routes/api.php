@@ -19,6 +19,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'
 ])->middleware('auth:sanctum');
 Route::post('/upload_profile_image', [UserInfo::class, 'uploadImage'])->middleware('auth:sanctum');
+Route::post('/register_complement', [UserInfo::class, 'registerComp']);
 
 // Store routes
 Route::post('/create_store', [StoreController::class, 'createStore']);
@@ -29,7 +30,6 @@ Route::post('/create_product', [ProductController::class, 'createProduct']);
 Route::post('/find_product_by_name', [ProductController::class, 'findProductByName']);
 Route::post('/find_product_by_store', [ProductController::class, 'findProductByStore']);
 Route::post('/update_product', [ProductController::class, 'updateProduct']);
-Route::post('/register_complement', [ProductController::class, 'registerComp']);
 
 // Cart routes
 Route::post('add_to_cart', [CartController::class, 'addToCart']);
