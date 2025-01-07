@@ -76,12 +76,12 @@ class UserInfo extends Controller implements HasMiddleware
                 $user->location = $fields['location'];
                 $user->birth_date = $fields['birth_date'];
                 $user->save();
-    
-                return response()->json([
-                    'success' => true,
-                    'message' => 'information added correctly',
-                ], 200);
             }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'information added correctly',
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
