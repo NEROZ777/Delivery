@@ -22,7 +22,7 @@ class CartController extends Controller
 
         // التحقق من أن الكمية المطلوبة أقل من أو تساوي الكمية المتوفرة
         if ($product->quantity < $validated['quantity']) {
-            return response()->json(['message' => 'Not enough stock available.'], 400);
+            return response()->json(['message' => 'Not enough stock available.'], 403);
         }
 
         // الحصول على المستخدم الحالي
