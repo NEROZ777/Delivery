@@ -23,7 +23,6 @@ Route::post('/register_complement', [UserInfo::class, 'registerComp']);
 
 // Store routes
 Route::post('/create_store', [StoreController::class, 'createStore']);
-Route::get('/show_all_stores', [StoreController::class, 'showAllStores']);
 
 // Products routes
 Route::post('/create_product', [ProductController::class, 'createProduct']);
