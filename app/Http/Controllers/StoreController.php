@@ -54,12 +54,33 @@ class StoreController extends Controller implements HasMiddleware
             ], 403);
         }
     }
-    public function show_stores_type(Request $request)
-{
+    public function showStoresType(Request $request)
+{ 
+    try{
     $type = $request->input('type');
-    $stores = Store::where('type', $type)->get();
+    $stores = Store::where('store_type', $type)->get();
+    return response([
 
-    return view('stores.index', compact('stores'));
+        'success'=>true,
+        'data'=>$stores
+
+         
+    ],200);
+
+}
+catch(\Exception $e){
+
+    return response([
+
+        'success'=>false,
+        'error'=>'something happened with stores showing',
+        'message'=>$e->getMessage()
+        
+        
+        ],403);
+
+}
+
 }
 
 
