@@ -54,6 +54,14 @@ class StoreController extends Controller implements HasMiddleware
             ], 403);
         }
     }
+    public function show_stores_type(Request $request)
+{
+    $type = $request->input('type');
+    $stores = Store::where('type', $type)->get();
+
+    return view('stores.index', compact('stores'));
+}
+
 
     // This function to update an excesting store
     public function storeUpdate(Request $request) {

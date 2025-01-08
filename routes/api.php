@@ -15,7 +15,7 @@ use App\Http\Controllers\ProductController;
 
 // Authentication and user profile routes
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'
 ])->middleware('auth:sanctum');
 Route::post('/upload_profile_image', [UserInfo::class, 'uploadImage'])->middleware('auth:sanctum');
@@ -29,7 +29,9 @@ Route::post('/create_product', [ProductController::class, 'createProduct']);
 Route::post('/find_product_by_name', [ProductController::class, 'findProductByName']);
 Route::post('/find_product_by_store', [ProductController::class, 'findProductByStore']);
 Route::post('/update_product', [ProductController::class, 'updateProduct']);
-Route::post('/register_complement', [ProductController::class, 'registerComp']);
+Route::post('/register_complement', [AuthController::class, 'registerComp']);
+Route::get('show_products',[ProductController::class,'showProducts']);
+//Route::post('/listProducts', [ProductController::class, 'listProducts']);
 
 // Cart routes
 Route::post('add_to_cart', [CartController::class, 'addToCart']);

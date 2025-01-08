@@ -19,10 +19,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->integer('phone_number');
             $table->string('password');
-            $table->string('profile_image');
-            $table->string('gendre');
-            $table->string('location');
-            $table->string('birth_date');
+            $table->string('profile_image')->default('images/1735403780_Wuthering Waves   10_2_2024 12_36_11 PM.png')->change();
+            $table->string('gendre')->default('not specified')->change();;
+            $table->string('location')->default('not specified')->change();;
+            $table->string('birth_date')->default('not specified')->change();;
             $table->rememberToken();
             $table->timestamps();
         });

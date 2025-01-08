@@ -147,4 +147,28 @@ class ProductController extends Controller implements HasMiddleware
             ], 403);
         }
     }
+    // public function listProducts()
+    // {
+    //     try {
+            
+    //         $products = Product::orderBy('id', 'asc')->get();
+    
+    //         return response()->json([
+    //             'message' => 'Products retrieved successfully',
+    //             'products' => $products,
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'error' => 'Failed to retrieve products',
+    //             'message' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+    
+    public function showProducts() {
+        $products = Product::orderBy('id', 'asc')->paginate(10);
+        return response()->json($products);
+    }
+    
+
 }
