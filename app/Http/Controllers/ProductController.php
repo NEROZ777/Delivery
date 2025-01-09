@@ -148,23 +148,37 @@ class ProductController extends Controller implements HasMiddleware
             ], 403);
         }
     }
-    // public function listProducts()
-    // {
-    //     try {
-            
-    //         $products = Product::orderBy('id', 'asc')->get();
-    
-    //         return response()->json([
-    //             'message' => 'Products retrieved successfully',
-    //             'products' => $products,
-    //         ], 200);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'error' => 'Failed to retrieve products',
-    //             'message' => $e->getMessage(),
-    //         ], 500);
-    //     }
-    // }
+
+    public function ShowProductByStore(Request $request) {
+        try {
+            $fields = $request->validate([
+           
+                'store_id' => 'required'
+            ]); 
+
+       
+
+            $product = Product::where('store_id', $fields['store_id'])->get();
+
+            if($product->isEmpty()) {
+                return response([
+                    'message' => 'no products has found',
+                ], 403);
+            }
+
+            return response([
+                // 'message' => 'the product has found',
+                'product' => $product,
+            ], 200);
+        } catch(\Exception $e) {
+            return response([
+                'error' => 'error happend while searchin for the product',
+                'message' => $e->getMessage(),
+            ], 403);
+        }
+    }
+
+
     
     public function showProducts() {
         // $products = Product::orderBy('id', 'asc')->paginate(10);

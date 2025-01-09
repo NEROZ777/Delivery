@@ -35,6 +35,7 @@ Route::post('/find_product_by_name', [ProductController::class, 'findProductByNa
 Route::post('/find_product_by_store', [ProductController::class, 'findProductByStore']);
 Route::post('/update_product', [ProductController::class, 'updateProduct']);
 Route::match(['get', 'post'], 'show_products', [ProductController::class, 'showProducts']);//تابع بيعرض المنتجات بيعرض حسب ال id 
+Route::post('/show_product_by_store', [ProductController::class, 'ShowProductByStore']);
 
 // Cart routes
 Route::post('add_to_cart', [CartController::class, 'addToCart']);
@@ -43,3 +44,5 @@ Route::post('add_to_cart', [CartController::class, 'addToCart']);
 // ratings routes
 Route::post('/product_rating', [ProductRatingController1::class, 'store'])->middleware('auth:sanctum');
 Route::post('/store_rating', [StoreRatingController::class, 'storeing'])->middleware('auth:sanctum');
+Route::post('/destroy_rating', [ProductRatingController1::class, 'destroy'])->middleware('auth:sanctum');
+
