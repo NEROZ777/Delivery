@@ -26,7 +26,8 @@ class ProductController extends Controller implements HasMiddleware
                 'description' => 'nullable|string', 
                 'price' => 'required|numeric|min:0', 
                 'quantity' => 'required|integer|min:1', 
-                'store_id' => 'required' 
+                'store_id' => 'required' ,
+                'ingredients' => 'required'
             ]); 
          
         $existingProduct = Product::where('name', $validated['name']) 
@@ -40,7 +41,7 @@ class ProductController extends Controller implements HasMiddleware
  
             return response()->json([ 
                 'message' => 'Product quantity updated successfully', 
-                'product' => $existingProduct, 
+                // 'product' => $existingProduct, 
             ], 200); 
         } 
         

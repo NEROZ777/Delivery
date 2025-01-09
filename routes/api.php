@@ -8,7 +8,8 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserInfo;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProductRatingController;
+
+use App\Http\Controllers\ProductRatingController1;
 use App\Http\Controllers\StoreRatingController;
 
 Route::get('/user', function (Request $request) {
@@ -40,5 +41,5 @@ Route::post('add_to_cart', [CartController::class, 'addToCart']);
 
 
 // ratings routes
-Route::post('/product_rating', [ProductRatingController::class, 'store'])->middleware('auth:sanctum');
+Route::post('/product_rating', [ProductRatingController1::class, 'store'])->middleware('auth:sanctum');
 Route::post('/store_rating', [StoreRatingController::class, 'storeing'])->middleware('auth:sanctum');

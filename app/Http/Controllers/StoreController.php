@@ -20,7 +20,7 @@ class StoreController extends Controller implements HasMiddleware
     public function createStore(Request $request) {
         try {
             $fields = $request->validate([
-                'store_name' => 'required',
+                'store_name' =>  'required|unique:stores,store_name',
                 'store_type' => 'required',
                 'store_image' => 'required',
                 'likes' => 'required',
@@ -32,8 +32,8 @@ class StoreController extends Controller implements HasMiddleware
             $store = Store::create($fields);
     
             return response([
-                'message' => 'store creating done correctly',
-                'store' => $store
+                'message' => 'store creating done correctly'
+                // 'store' => $store
             ], 200);
         } catch(\Exception $e){
             return response([
@@ -65,7 +65,7 @@ class StoreController extends Controller implements HasMiddleware
     $stores = Store::where('store_type', $type)->get();
     return response([
 
-        'success'=>true,
+       // 'success'=>true,
         'data'=>$stores
 
          
@@ -76,7 +76,7 @@ catch(\Exception $e){
 
     return response([
 
-        'success'=>false,
+     //   'success'=>false,
         'error'=>'something happened with stores showing',
         'message'=>$e->getMessage()
         

@@ -9,7 +9,7 @@ class StoreRating extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['store_id', 'user_id', 'rating'];
+    protected $fillable = ['stores_id', 'user_id', 'rating'];
 
     public function store()
     {
