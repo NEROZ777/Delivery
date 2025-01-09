@@ -57,6 +57,7 @@ class AuthController extends Controller
                 ], 403);
             }
     
+            $user->tokens()->delete();
             $token = $user->createToken($user->first_name);
     
             return response([

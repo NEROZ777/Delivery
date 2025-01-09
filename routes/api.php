@@ -23,7 +23,6 @@ Route::post('/register_complement', [UserInfo::class, 'registerComp']);
 
 // Store routes
 Route::post('/create_store', [StoreController::class, 'createStore']);
-Route::get('/show_all_stores', [StoreController::class, 'showAllStores']);
 
 // Products routes
 Route::post('/create_product', [ProductController::class, 'createProduct']);
@@ -33,3 +32,6 @@ Route::post('/update_product', [ProductController::class, 'updateProduct']);
 
 // Cart routes
 Route::post('add_to_cart', [CartController::class, 'addToCart']);
+Route::post('/update_order', [CartController::class, 'updateOrder']);
+Route::post('/delete_order', [CartController::class, 'deleteOrder']);
+Route::post('/get_orders', [CartController::class, 'getOrders']);

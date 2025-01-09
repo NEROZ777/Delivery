@@ -59,16 +59,16 @@ class UserInfo extends Controller implements HasMiddleware
                 'birth_date' => 'required'
             ]);
 
-            if($request->hasFile('image')){ 
+            if($request->hasFile('profile_image')){ 
 
                 $path = public_path('users_profile_images');
                 if(!File::exists($path)){
                     File::makeDirectory($path, 0755, true);
                 }
     
-                $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+                $imageName = time() . '_' . $request->file('profile_image')->getClientOriginalName();
     
-                $request->file('image')->move($path, $imageName); 
+                $request->file('profile_image')->move($path, $imageName); 
     
                 $user = $request->user();
                 $user->profile_image = 'users_profile_images/' . $imageName;
