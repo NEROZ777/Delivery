@@ -102,7 +102,7 @@ class ProductController extends Controller implements HasMiddleware
 
             return response([
                 'message' => 'the product has found',
-                'product' => $product,
+                // 'product' => $product,
             ], 200);
         } catch(\Exception $e) {
             return response([
@@ -189,8 +189,8 @@ class ProductController extends Controller implements HasMiddleware
        
         return response([
 
-            'success'=>true,
-           // 'data'=>$formatedProducts
+            // 'success'=>true,
+            'data'=>$formatedProducts
 
              
         ],200);
