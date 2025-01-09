@@ -177,7 +177,7 @@ class ProductController extends Controller implements HasMiddleware
                 'title' => $product->name,
                 'description' => $product->description,
                 'price' => number_format($product->price, 2) . ' $', 
-                'imageUrl' => $product->image ? url($product->image) : null,
+                'imageUrl' =>$product->image_url,
         ];     
 
 
@@ -186,7 +186,7 @@ class ProductController extends Controller implements HasMiddleware
        
         return response([
 
-            'success'=>true,
+            // 'success'=>true,
             'data'=>$formatedProducts
 
              
