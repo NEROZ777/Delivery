@@ -178,6 +178,7 @@ class ProductController extends Controller implements HasMiddleware
                 'description' => $product->description,
                 'price' => number_format($product->price, 2) . ' $', 
                 'imageUrl' =>$product->image_url,
+                'id'=>$product->id
         ];     
 
 
