@@ -22,4 +22,14 @@ class Product extends Model
     public function store() {
         return $this->belongsTo('App/Model/Store');
     }
+    public function ratings()
+{
+    return $this->hasMany(ProductRating::class);
+}
+
+public function averageRating()
+{
+    return $this->ratings()->avg('rating');
+}
+
 }

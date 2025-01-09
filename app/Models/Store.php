@@ -17,10 +17,25 @@ class Store extends Model
         'store_type',
         'store_image',
         'store_rate',
-        'about'
+        'likes',
+        'location',
+        'cuisine',
+        'dishes'
+
     ];
 
     public function product(){
         return $this->hasMany('App/Model/Product');
     }
+    public function ratings()
+    {
+        return $this->hasMany(StoreRating::class);
+    }
+    
+    public function averageRating()
+    {
+        return $this->ratings()->avg('rating');
+    }
+    
+
 }

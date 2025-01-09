@@ -8,10 +8,12 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserInfo;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductRatingController;
+use App\Http\Controllers\StoreRatingController;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
 // Authentication and user profile routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -35,3 +37,8 @@ Route::match(['get', 'post'], 'show_products', [ProductController::class, 'showP
 
 // Cart routes
 Route::post('add_to_cart', [CartController::class, 'addToCart']);
+
+
+// ratings routes
+Route::post('/product_rating', [ProductRatingController::class, 'store'])->middleware('auth:sanctum');
+Route::post('/store_rating', [StoreRatingController::class, 'storeing'])->middleware('auth:sanctum');

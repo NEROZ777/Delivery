@@ -52,4 +52,17 @@ class User extends Authenticatable
     {
         return $this->hasOne(Cart::class);
     }
+    use Notifiable;
+
+    
+    public function productRatings()
+    {
+        return $this->hasMany(ProductRating::class);
+    }
+
+    
+    public function storeRatings()
+    {
+        return $this->hasMany(StoreRating::class);
+    }
 }

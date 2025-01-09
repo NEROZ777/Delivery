@@ -22,7 +22,11 @@ class StoreController extends Controller implements HasMiddleware
             $fields = $request->validate([
                 'store_name' => 'required',
                 'store_type' => 'required',
-                'about' => 'required'
+                'store_image' => 'required',
+                'likes' => 'required',
+                'location' => 'required',
+                'cuisine' => 'required',
+                'dishes' => 'required'
             ]);
     
             $store = Store::create($fields);
