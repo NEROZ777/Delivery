@@ -16,12 +16,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->text('ingredients')->nullable();
+             $table->text('ingredients')->nullable();
             $table->decimal('price',10,2);
             $table->integer('quantity');
             $table->foreignId('store_id')->constrained();
             $table->decimal('average_rating', 5, 2)->nullable();
-
+            $table->string('image_url');
             $table->timestamps();
         });
     }
