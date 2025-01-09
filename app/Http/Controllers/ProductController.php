@@ -49,7 +49,7 @@ class ProductController extends Controller implements HasMiddleware
      
         return response()->json([ 
                 'message' => 'Product created successfully', 
-                'product' => $product, 
+                // 'product' => $product, 
             ], 200); 
         } catch(\Exception $e) { 
             return response()->json([ 
