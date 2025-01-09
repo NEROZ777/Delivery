@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->foreignId('store_id')->constrained();
             $table->decimal('average_rating', 5, 2)->nullable();
-            $table->string('image_url');
+            $table->string('image_url')->nullable();
             $table->timestamps();
         });
     }
