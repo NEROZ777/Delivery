@@ -11,7 +11,7 @@ class StoreRatingController extends Controller
     public function storeing(Request $request)
     {
         $request->validate([
-            'store_id' => 'required|exists:store,id',  // تعديل التحقق لتوافق اسم الحقل
+            'store_id' => 'required|exists:stores,id',  // تعديل التحقق لتوافق اسم الحقل
             'rating' => 'required|integer|between:0,5',  
         ]);
     
@@ -35,6 +35,25 @@ class StoreRatingController extends Controller
             ]);
     
             return response()->json(['message' => 'Rating added successfully.']);
+        }
+    }
+    public function destroy(Request $request){
+
+        $request ->validate([
+
+            'store_id'=> 'required|exists:stores,id',
+
+        ]);
+        $rating = StoreRating::where('user_id', Auth::id())
+        ->where('store_id', $request->input('store_id'))
+        ->first();
+        if ($rating) {
+            
+            $rating->delete();
+            return response()->json(['message' => 'Rating deleted successfully.']);
+        } else {
+            // إذا لم يتم العثور على التقييم
+            return response()->json(['message' => 'Rating not found.'], 404);
         }
     }
     
