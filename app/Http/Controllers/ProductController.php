@@ -65,33 +65,43 @@ class ProductController extends Controller implements HasMiddleware
     }
 
     // This function to update the product
-    public function updateProduct(Request $request, Product $product)
+    public function updateProduct(Request $request)
     {
         try {
+            
             $validated = $request->validate([
-              'name' => 'required|string|max:255', 
+                'id' => 'required|exists:products,id', 
+                'name' => 'required|string|max:255|unique:products,name,', 
                 'description' => 'nullable|string', 
                 'price' => 'required|numeric|min:0', 
                 'quantity' => 'required|integer|min:1', 
-                'store_id' => 'required' ,
+                'store_id' => 'required',
                 'ingredients' => 'required',
-                'image_url'=>'nullable|url'
+                'image_url' => 'nullable|url',
             ]);
     
+            $productId = $validated['id'];
+    
+
+            $product = Product::findOrFail($productId);
+    
+
             $product->update($validated);
     
+
             return response()->json([
                 'message' => 'Product updated successfully',
-                 'product' => $product,
+                // 'product' => $product,  
             ], 200);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
+            
             return response()->json([
-                'error' => 'product updating error',
+                'error' => 'Product updating error',
                 'message' => $e->getMessage(),
             ], 403);
         }
     }
-
+    
     // This function to find a product by name
     public function findProductByName(Request $request) {
         try {
@@ -165,24 +175,55 @@ class ProductController extends Controller implements HasMiddleware
 
        
 
-            $product = Product::where('store_id', $fields['store_id'])->get();
+            $products = Product::where('store_id', $fields['store_id'])->get();
 
-            if($product->isEmpty()) {
+            if($products->isEmpty()) {
                 return response([
                     'message' => 'no products has found',
                 ], 403);
             }
+            $formatedProducts=$products->map(function($product){
+                return[
+                        'title' => $product->name,
+                        'description' => $product->description,
+                        'price' => number_format($product->price, 2) . ' $', 
+                        'imageUrl' =>$product->image_url,
+                        'id'=>$product->id,
+                        'ingredients'=>$product->ingredients ,
+                        'average_rating' => $product->average_rating,
+                       'store_id' => $product->store_id,
+                       'quantity'=> $product->quantity
+                        
+                ];     
+        
+        
+               });
+               
+               
+                return response([
+        
+                    // 'success'=>true,
+                    'data'=>$formatedProducts
+        
+                     
+                ],200);
+        
+            }
+            catch(\Exception $e){
+        return response([
+        
+        'success'=>false,
+        'error'=>'something happened with products showing',
+        'message'=>$e->getMessage()
+        
+        
+        ],403);
+        
+        
+        
+            }
 
-            return response([
-                // 'message' => 'the product has found',
-                'product' => $product,
-            ], 200);
-        } catch(\Exception $e) {
-            return response([
-                'error' => 'error happend while searchin for the product',
-                'message' => $e->getMessage(),
-            ], 403);
-        }
+  
     }
 
 
@@ -203,8 +244,11 @@ class ProductController extends Controller implements HasMiddleware
                 'price' => number_format($product->price, 2) . ' $', 
                 'imageUrl' =>$product->image_url,
                 'id'=>$product->id,
-                'ingredients'=>$product->ingredients
-
+                'ingredients'=>$product->ingredients ,
+                'average_rating' => $product->average_rating,
+               'store_id' => $product->store_id,
+               'quantity'=> $product->quantity
+                
         ];     
 
 
