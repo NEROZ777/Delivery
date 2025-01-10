@@ -22,4 +22,12 @@ class Product extends Model
     public function store() {
         return $this->belongsTo('App/Model/Store');
     }
+
+    public function favourite() {
+        return $this->belongsTo(Favourite::class);
+    }
+
+    public function cart() {
+        return $this->belongsTo(Cart::class);
+    }
 }

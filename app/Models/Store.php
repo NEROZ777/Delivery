@@ -23,4 +23,8 @@ class Store extends Model
     public function product(){
         return $this->hasMany('App/Model/Product');
     }
+
+    public function favourite() {
+        return $this->belongsTo(Cart::class);
+    }
 }

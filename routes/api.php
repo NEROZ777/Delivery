@@ -35,3 +35,9 @@ Route::post('add_to_cart', [CartController::class, 'addToCart']);
 Route::post('/update_order', [CartController::class, 'updateOrder']);
 Route::post('/delete_order', [CartController::class, 'deleteOrder']);
 Route::post('/get_orders', [CartController::class, 'getOrders']);
+
+// Favourites routes
+Route::post('/add_to_favourite', [UserInfo::class, 'addToFav']);
+Route::post('/remove_from_favourite', [UserInfo::class, 'removeFav']);
+Route::post('/favourite_products', [UserInfo::class, 'getAllFavProducts']);
+Route::post('/favourite_stores', [UserInfo::class, 'getAllFavStores']);
