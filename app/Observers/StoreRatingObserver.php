@@ -12,7 +12,7 @@ class StoreRatingObserver
      * Handle the StoreRating "created" event.
      */
     public function created(StoreRating $storeRating): void
-    {Log::info("StoreRatingObserver called for event: created");
+    {
 
         $this->updateStoreRating($storeRating);
     }
@@ -21,7 +21,7 @@ class StoreRatingObserver
      * Handle the StoreRating "updated" event.
      */
     public function updated(StoreRating $storeRating): void
-    {Log::info("StoreRatingObserver called for event: created");
+    {
 
         $this->updateStoreRating($storeRating);
     }
@@ -39,7 +39,7 @@ class StoreRatingObserver
      */
     protected function updateStoreRating(StoreRating $storeRating)//: void
     {
- Log::info("Updating store rating for store ID: {$storeRating->store_id}");
+ 
         $store = $storeRating->store;
 
         if ($store) {

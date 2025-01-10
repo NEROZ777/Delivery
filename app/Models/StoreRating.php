@@ -9,11 +9,11 @@ class StoreRating extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['stores_id', 'user_id', 'rating'];
+    protected $fillable = ['store_id', 'user_id', 'rating'];
 
     public function store()
     {
-        return $this->belongsTo(Store::class,'stores_id');
+        return $this->belongsTo(Store::class,'store_id');
     }
     public function user()
     {

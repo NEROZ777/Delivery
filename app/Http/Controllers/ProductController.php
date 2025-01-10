@@ -169,20 +169,28 @@ class ProductController extends Controller implements HasMiddleware
     public function ShowProductByStore(Request $request) {
         try {
             $fields = $request->validate([
-           
-                'store_id' => 'required'
-            ]); 
+                'store_name' => 'required'
+            ]);
+    
 
-       
+            $store = Store::where('store_name', $fields['store_name'])->first();
+    
+            if (!$store) {
+                return response([
+                    'message' => 'Store not found',
+                ], 404);
+            }
+     
 
-            $products = Product::where('store_id', $fields['store_id'])->get();
+            $products = Product::where('store_id',  $store->id)->get();
 
             if($products->isEmpty()) {
                 return response([
                     'message' => 'no products has found',
                 ], 403);
             }
-            $formatedProducts=$products->map(function($product){
+            $formatedProducts=$products->map(function($product)use ($store){
+                
                 return[
                         'title' => $product->name,
                         'description' => $product->description,
@@ -192,7 +200,8 @@ class ProductController extends Controller implements HasMiddleware
                         'ingredients'=>$product->ingredients ,
                         'average_rating' => $product->average_rating,
                        'store_id' => $product->store_id,
-                       'quantity'=> $product->quantity
+                       'quantity'=> $product->quantity,
+                       'store_name' => $store->store_name,
                         
                 ];     
         
@@ -232,7 +241,8 @@ class ProductController extends Controller implements HasMiddleware
         // $products = Product::orderBy('id', 'asc')->paginate(10);
         // return response()->json($products);
     try{
-        $products = Product::orderByRaw('COALESCE(average_rating, 0) DESC')
+        $products = Product::with('store')
+                    ->orderByRaw('COALESCE(average_rating, 0) DESC')
                    ->take(min(10, Product::count()))  // 
                    ->get();
 
@@ -247,7 +257,8 @@ class ProductController extends Controller implements HasMiddleware
                 'ingredients'=>$product->ingredients ,
                 'average_rating' => $product->average_rating,
                'store_id' => $product->store_id,
-               'quantity'=> $product->quantity
+               'quantity'=> $product->quantity,
+               'store_name' => $product->store->store_name
                 
         ];     
 

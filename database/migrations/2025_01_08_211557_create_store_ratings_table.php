@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('store_ratings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('stores_id')->constrained()->onDelete('cascade');
+            $table->foreignId('store_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
             $table->unsignedTinyInteger('rating')->comment('Rating from 1 to 5');
             $table->timestamps();

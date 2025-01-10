@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Store extends Model
 {
     use HasFactory, Notifiable, HasApiTokens;
-
+    protected $table = 'stores'; 
     protected $fillable = [
         'store_name',
         'store_type',
@@ -25,7 +25,7 @@ class Store extends Model
     ];
 
     public function product(){
-        return $this->hasMany('App/Model/Product');
+        return $this->hasMany(Product::class);
     }
     public function ratings()
     {

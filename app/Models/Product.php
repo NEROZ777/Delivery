@@ -22,7 +22,7 @@ class Product extends Model
     ];
 
     public function store() {
-        return $this->belongsTo('App/Model/Store');
+        return $this->belongsTo(Store::class);
     }
     public function ratings()
 {

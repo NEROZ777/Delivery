@@ -11,12 +11,12 @@ class StoreRatingController extends Controller
     public function storeing(Request $request)
     {
         $request->validate([
-            'stores_id' => 'required|exists:stores,id',  // تعديل التحقق لتوافق اسم الحقل
+            'store_id' => 'required|exists:store,id',  // تعديل التحقق لتوافق اسم الحقل
             'rating' => 'required|integer|between:0,5',  
         ]);
     
         $existingRating = StoreRating::where('user_id', Auth::id())
-                                     ->where('stores_id', $request->input('stores_id'))
+                                     ->where('store_id', $request->input('store_id'))
                                      ->first();
     
         if ($existingRating) {
@@ -30,7 +30,7 @@ class StoreRatingController extends Controller
             // إضافة تقييم جديد
             $rating = StoreRating::create([
                 'user_id' => Auth::id(),
-                'stores_id' => $request->input('stores_id'),
+                'store_id' => $request->input('store_id'),
                 'rating' => $request->input('rating'),
             ]);
     
