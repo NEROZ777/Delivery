@@ -20,16 +20,20 @@ class StoreController extends Controller implements HasMiddleware
     public function createStore(Request $request) {
         try {
             $fields = $request->validate([
-                'store_name' => 'required',
+                'store_name' =>  'required|unique:stores,store_name',
                 'store_type' => 'required',
-                'about' => 'required'
+                'store_image' => 'required',
+                'likes' => 'required',
+                'location' => 'required',
+                'cuisine' => 'required',
+                'dishes' => 'required'
             ]);
     
             $store = Store::create($fields);
     
             return response([
-                'message' => 'store creating done correctly',
-                'store' => $store
+                'message' => 'store creating done correctly'
+                // 'store' => $store
             ], 200);
         } catch(\Exception $e){
             return response([
@@ -54,6 +58,35 @@ class StoreController extends Controller implements HasMiddleware
             ], 403);
         }
     }
+    public function showStoresType(Request $request)
+{ 
+    try{
+    $type = $request->input('type');
+    $stores = Store::where('store_type', $type)->get();
+    return response([
+
+       // 'success'=>true,
+        'data'=>$stores
+
+         
+    ],200);
+
+}
+catch(\Exception $e){
+
+    return response([
+
+     //   'success'=>false,
+        'error'=>'something happened with stores showing',
+        'message'=>$e->getMessage()
+        
+        
+        ],403);
+
+}
+
+}
+
 
     // This function to update an excesting store
     public function storeUpdate(Request $request) {

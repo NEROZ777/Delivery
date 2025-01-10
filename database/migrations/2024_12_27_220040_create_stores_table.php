@@ -15,11 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('store_name');
             $table->string('store_type'); // example: restaurant, market and athors
+            $table->string('cuisine')->nullable();
+            $table->string('likes')->nullable();
+            $table->string('location')->nullable();
+            $table->string('dishes')->nullable();
             $table->string('store_image')->nullable();
-            $table->integer('store_rate')->nullable();
-            $table->text('about');
+            $table->unsignedTinyInteger('store_rate')->comment('Rating from 1 to 5')->nullable();
+            
             $table->timestamps();
         });
+    
     }
 
     /**
