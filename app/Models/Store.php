@@ -9,9 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class Store extends Model
-{
+{   protected $table = 'stores'; 
     use HasFactory, Notifiable, HasApiTokens;
-    protected $table = 'stores'; 
+  
     protected $fillable = [
         'store_name',
         'store_type',

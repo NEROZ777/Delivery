@@ -44,5 +44,6 @@ Route::post('add_to_cart', [CartController::class, 'addToCart']);
 // ratings routes
 Route::post('/product_rating', [ProductRatingController1::class, 'store'])->middleware('auth:sanctum');
 Route::post('/store_rating', [StoreRatingController::class, 'storeing'])->middleware('auth:sanctum');
-Route::post('/destroy_rating', [ProductRatingController1::class, 'destroy'])->middleware('auth:sanctum');
+Route::post('/destroy_product_rating', [ProductRatingController1::class, 'destroy'])->middleware('auth:sanctum');
+Route::post('/destroy_stor_rating', [StoreRatingController::class, 'destroy'])->middleware('auth:sanctum');
 
