@@ -237,4 +237,24 @@ class UserInfo extends Controller implements HasMiddleware
             ], 403);
         }
     }
+
+    // This function to get user info
+    public function userInfo() {
+        try {
+            $user = auth('sanctum')->user();
+    
+            if(!$user) {
+                return response([
+                    'message' => 'unauthorized'
+                ], 401);
+            }
+
+            return response([
+                'user_info' => $user
+            ], 200);
+        } catch(\Exception $e) {
+
+        }
+        
+    }
 }

@@ -23,6 +23,7 @@ Route::post('/logout', [AuthController::class, 'logout'
 ])->middleware('auth:sanctum');
 Route::post('/upload_profile_image', [UserInfo::class, 'uploadImage'])->middleware('auth:sanctum');
 Route::post('/register_complement', [UserInfo::class, 'registerComp']);
+Route::post('/user_info', [UserInfo::class, 'userInfo']);
 
 // Store routes
 Route::post('/create_store', [StoreController::class, 'createStore']);

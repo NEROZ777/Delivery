@@ -27,12 +27,10 @@ class Store extends Model
     public function product(){
         return $this->hasMany(Product::class);
     }
-<<<<<<< HEAD
 
     public function favourite() {
         return $this->belongsTo(Cart::class);
     }
-=======
     public function ratings()
     {
         return $this->hasMany(StoreRating::class);
@@ -44,5 +42,4 @@ class Store extends Model
     }
     
 
->>>>>>> 61e584144770b90f440b788db56c9f2ffb2df898
 }

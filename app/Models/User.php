@@ -52,12 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Cart::class);
     }
-<<<<<<< HEAD
 
     public function favourites() {
         return $this->hasMany(Favourite::class);
-=======
-    use Notifiable;
+    }
 
     
     public function productRatings()
@@ -69,6 +67,5 @@ class User extends Authenticatable
     public function storeRatings()
     {
         return $this->hasMany(StoreRating::class);
->>>>>>> 61e584144770b90f440b788db56c9f2ffb2df898
     }
 }
