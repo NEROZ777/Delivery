@@ -16,7 +16,7 @@ public function store(Request $request)
     
     $request->validate([
         'product_id' => 'required|exists:products,id',  
-        'rating' => 'required|integer|between:1,5',  
+        'rating' => 'required|between:1,5',  
     ]);
     // if (Auth::check()) {
     //    $userId= Auth::id();
