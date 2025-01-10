@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -19,7 +20,11 @@ class CartController extends Controller
                 'service_cost' => 'sometimes|numeric|min:0'
             ]);
 
-            $cost = $fields['service-cost'] ?? 0.00;
+            $cost = 0.00;
+
+            if(isset($fields['service_cost'])) {
+                $cost = $fields['service_cost'];
+            }
             
             $user = auth('sanctum')->user();
     
@@ -37,10 +42,10 @@ class CartController extends Controller
     
             if ($order) {
                 $order->quantity += $fields['quantity'];
-                $order->price = $order->quantity * $product->price + $cost;
+                $order->price = $order->quantity * $product->price;
                 $order->save();
             } else {
-                $price = $product->price * $fields['quantity'] + $cost;
+                $price = $product->price * $fields['quantity'];
                 Cart::create([
                     'service_cost' => $cost,
                     'product_id' => $fields['product_id'],
@@ -179,20 +184,23 @@ class CartController extends Controller
 
             $orders = Cart::where('user_id', $user->id)
                       ->join('products', 'carts.product_id', '=', 'products.id')
+                      ->join('stores', 'products.store_id', '=', 'stores.id')
                       ->select(
-                          'carts.id as cart_id',
                           'carts.quantity',
                           'carts.created_at as order_date',
+                          'carts.price as price',
                           'carts.service_cost as service_cost',
-                          'carts.price as total_price',
-                          'products.id as product_id',
-                          'products.name as product_name',
+                          DB::raw('carts.price + carts.service_cost as total_cost'),
+                          'products.id as id',
+                          'products.name as title',
                           'products.price as product_price',
-                          'products.description as product_description',
+                          'products.description as description',
                           'products.quantity as product_quantity',
                           'products.store_id as store_id',
+                          'stores.store_name as store_name',
                           'products.average_rating as product_average_rating',
-                          'products.ingredients as product_ingredients'
+                          'products.ingredients as product_ingredients',
+                          'products.image_url as imageUrl'
                       )
                       ->get();
 
