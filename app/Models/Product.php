@@ -18,7 +18,7 @@ class Product extends Model
         'quantity',
         'store_id',
         'ingredients',
-        'imageUrl'
+        'image_url'
     ];
 
     public function store() {

@@ -13,7 +13,7 @@ class StoreRating extends Model
 
     public function store()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(Store::class,'stores_id');
     }
     public function user()
     {

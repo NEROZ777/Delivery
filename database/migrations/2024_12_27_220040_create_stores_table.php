@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->string('dishes')->nullable();
             $table->string('store_image')->nullable();
-            $table->integer('store_rate')->nullable();
+            $table->unsignedTinyInteger('store_rate')->comment('Rating from 1 to 5')->nullable();
             
             $table->timestamps();
         });

@@ -27,12 +27,17 @@ class ProductController extends Controller implements HasMiddleware
                 'price' => 'required|numeric|min:0', 
                 'quantity' => 'required|integer|min:1', 
                 'store_id' => 'required' ,
-                'ingredients' => 'required'
+                'ingredients' => 'required',
+                'image_url'=>'nullable|url'
             ]); 
          
-        $existingProduct = Product::where('name', $validated['name']) 
-                                  ->where('store_id', $validated['store_id']) 
-                                  ->first(); 
+            $existingProduct = Product::where('name', $validated['name'])
+            ->where('store_id', $validated['store_id'])
+            ->where('ingredients', $validated['ingredients'])
+            ->where('description', $validated['description'])  
+            ->where('price', $validated['price'])  
+            ->where('image_url', $validated['image_url'])  
+            ->first(); 
  
         if ($existingProduct) { 
              
@@ -64,18 +69,20 @@ class ProductController extends Controller implements HasMiddleware
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'price' => 'required|numeric',
-                'quantity' => 'required|integer',
-                'image' => 'nullable|url', 
+              'name' => 'required|string|max:255', 
+                'description' => 'nullable|string', 
+                'price' => 'required|numeric|min:0', 
+                'quantity' => 'required|integer|min:1', 
+                'store_id' => 'required' ,
+                'ingredients' => 'required',
+                'image_url'=>'nullable|url'
             ]);
     
-           $p = $product->update($validated);
+            $product->update($validated);
     
             return response()->json([
-                'message' => 'Product created successfully',
-                'product' => $p,
+                'message' => 'Product updated successfully',
+                 'product' => $product,
             ], 200);
         } catch(\Exception $e) {
             return response()->json([
@@ -184,7 +191,10 @@ class ProductController extends Controller implements HasMiddleware
         // $products = Product::orderBy('id', 'asc')->paginate(10);
         // return response()->json($products);
     try{
-        $products = Product::orderBy('id', 'asc')->get();
+        $products = Product::orderByRaw('COALESCE(average_rating, 0) DESC')
+                   ->take(min(10, Product::count()))  // 
+                   ->get();
+
        
        $formatedProducts=$products->map(function($product){
         return[
