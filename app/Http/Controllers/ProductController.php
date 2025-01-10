@@ -19,50 +19,63 @@ class ProductController extends Controller implements HasMiddleware
 
     // This function to create a product
     public function createProduct(Request $request) 
-    { 
-        try { 
-            $validated = $request->validate([ 
-                'name' => 'required|string|max:255', 
-                'description' => 'nullable|string', 
-                'price' => 'required|numeric|min:0', 
-                'quantity' => 'required|integer|min:1', 
-                'store_id' => 'required' ,
-                'ingredients' => 'required',
-                'image_url'=>'nullable|url'
-            ]); 
-         
-            $existingProduct = Product::where('name', $validated['name'])
+{ 
+    try { 
+        // التحقق من صحة البيانات
+        $validated = $request->validate([ 
+            'name' => 'required|string|max:255', 
+            'description' => 'nullable|string', 
+            'price' => 'required|numeric|min:0', 
+            'quantity' => 'required|integer|min:1', 
+            'store_name' => 'required|string', 
+            'ingredients' => 'required|string',  
+            'image_url' => 'nullable|url'
+        ]); 
+
+        
+        $store = Store::where('store_name', $validated['store_name'])->first(); 
+
+        if (!$store) {
+            return response()->json([ 
+                'error' => 'Store not found', 
+            ], 404); 
+        }
+    
+        
+        $validated['store_id'] = $store->id;
+
+        $existingProduct = Product::where('name', $validated['name'])
             ->where('store_id', $validated['store_id'])
             ->where('ingredients', $validated['ingredients'])
             ->where('description', $validated['description'])  
             ->where('price', $validated['price'])  
             ->where('image_url', $validated['image_url'])  
             ->first(); 
- 
+
         if ($existingProduct) { 
-             
             $existingProduct->quantity += $validated['quantity']; 
             $existingProduct->save(); 
- 
+
             return response()->json([ 
                 'message' => 'Product quantity updated successfully', 
-                // 'product' => $existingProduct, 
+               // 'product' => $existingProduct,  
             ], 200); 
         } 
         
         $product = Product::create($validated); 
-     
+
         return response()->json([ 
-                'message' => 'Product created successfully', 
-                // 'product' => $product, 
-            ], 200); 
-        } catch(\Exception $e) { 
-            return response()->json([ 
-                'error' => 'product creation error', 
-                'message' => $e->getMessage(), 
-            ], 403); 
-        } 
-    }
+            'message' => 'Product created successfully', 
+            //'product' => $product,  
+        ], 200); 
+    } catch(\Exception $e) { 
+        return response()->json([ 
+            'error' => 'Product creation error', 
+            'message' => $e->getMessage(), 
+        ], 403); 
+    } 
+}
+
 
     // This function to update the product
     public function updateProduct(Request $request)
