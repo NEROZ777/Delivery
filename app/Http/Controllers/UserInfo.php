@@ -176,11 +176,18 @@ class UserInfo extends Controller implements HasMiddleware
 
             $favList = Favourite::where('user_id', $user->id)
                             ->join('products', 'favourites.product_id', '=', 'products.id')
+                            ->join('stores', 'products.store_id', '=', 'stores.id')
                             ->select('products.id as product_id',
-                             'products.name as product_name',
+                             'products.name as title',
                              'products.description as description',
+                             'products.price as price',
+                             'products.image_url as imageUrl',
+                             'products.id as id',
+                             'products.ingredients as ingredients',
+                             'products.average_rating as average_rating',
+                             'products.store_id as store_id',
                              'products.quantity as quantity',
-                             'products.store_id as store_id')
+                             'stores.store_name as store_name')
                             ->get();
 
             if($favList->isEmpty()) {
@@ -213,12 +220,17 @@ class UserInfo extends Controller implements HasMiddleware
 
             $favList = Favourite::where('user_id', $user->id)
                             ->join('stores', 'favourites.store_id', '=', 'stores.id')
-                            ->select('stores.id as store_id',
+                            ->select('stores.id as id',
                              'stores.store_name as store_name',
                              'stores.store_type as store_type',
+                             'stores.cuisine as cuisine',
+                             'stores.likes as likes',
+                             'stores.location as location',
+                             'stores.dishes as dishes',
                              'stores.store_image as store_image',
                              'stores.store_rate as store_rate',
-                             'stores.about as about')
+                             'stores.created_at as created_at',
+                             'stores.updated_at as updated_at')
                             ->get();
 
             if($favList->isEmpty()) {
