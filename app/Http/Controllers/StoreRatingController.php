@@ -52,7 +52,7 @@ class StoreRatingController extends Controller
             $rating->delete();
             return response()->json(['message' => 'Rating deleted successfully.']);
         } else {
-            // إذا لم يتم العثور على التقييم
+            
             return response()->json(['message' => 'Rating not found.'], 404);
         }
     }

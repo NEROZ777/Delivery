@@ -27,11 +27,13 @@ Route::post('/user_info', [UserInfo::class, 'userInfo']);
 
 // Store routes
 Route::post('/create_store', [StoreController::class, 'createStore']);
-Route::get('/show_all_stores', [StoreController::class, 'showAllStores']);
+Route::delete('/delete_store', [StoreController::class, 'deleteStore']);
+Route::post('/show_all_stores', [StoreController::class, 'showAllStores']);
 Route::post('/show_stores_type', [StoreController::class, 'showStoresType']);// انت بتعطيه النوع و هو برجع الستورز من نفس النوع 
 
 // Products routes
 Route::post('/create_product', [ProductController::class, 'createProduct']);
+Route::delete('/delete_product', [ProductController::class, 'deleteProduct']);
 Route::post('/find_product_by_name', [ProductController::class, 'findProductByName']);
 Route::post('/find_product_by_store', [ProductController::class, 'findProductByStore']);
 Route::post('/update_product', [ProductController::class, 'updateProduct']);

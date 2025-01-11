@@ -6,6 +6,7 @@ use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class StoreController extends Controller implements HasMiddleware
 {
@@ -42,71 +43,103 @@ class StoreController extends Controller implements HasMiddleware
             ], 403);
         }
     }
+    public function deleteStore(Request $request)
+    {
+        try {
+          
+            $id = $request->input('id');
+    
+          
+            if (!$id) {
+                return response()->json([
+                    'error' => 'Store ID is required',
+                ], 400);
+            }
+    
+            $store = Store::find($id);
+    
+            if (!$store) {
+                return response()->json([
+                    'error' => 'Store not found',
+                ], 404);
+            }
+    
+            $store->delete();
+    
+            return response()->json([
+                'message' => 'Store deleted successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Store deletion error',
+                'message' => $e->getMessage(),
+            ], 403);
+        }
+    }
+    
+
 
     // This function to show the all stores
-    public function showAllStores(Request $request){
+    public function showAllStores(Request $request) {
         try {
             $stores = Store::all();
+            
+            $language = $request->input('lang', 'en');   
+    
+
+            $translatedStores = $stores->map(function ($store) use ($language) {
+                return [
+                    'id' => $store->id,
+                    'name' => $store->name ? GoogleTranslate::trans($store->name, $language) : '',  
+                    'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',  
+                    'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '',
+                    'created_at' => $store->created_at,
+                    'updated_at' => $store->updated_at,
+                ];
+            });
     
             return response([
-                $stores
+                'stores' => $translatedStores,
             ], 200);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response([
-                'error' => 'something happend with stores showing',
-                'message' => $e->getMessage()
+                'error' => 'something happened with stores showing',
+                'message' => $e->getMessage(),
             ], 403);
         }
     }
-    public function showStoresType(Request $request)
-{ 
-    try{
-    $type = $request->input('type');
-    $stores = Store::where('store_type', $type)->get();
-    return response([
-
-       // 'success'=>true,
-        'data'=>$stores
-
-         
-    ],200);
-
-}
-catch(\Exception $e){
-
-    return response([
-
-     //   'success'=>false,
-        'error'=>'something happened with stores showing',
-        'message'=>$e->getMessage()
-        
-        
-        ],403);
-
-}
-
-}
-
-
-    // This function to update an excesting store
-    public function storeUpdate(Request $request) {
-        $fields = $request->validate([
-            'store_id' => 'required',
-            'store_name' => 'required',
-            'store_type' => 'required',
-            'about' => 'required'
-        ]);
-
-        $store = STORE::where('id', $fields['store_id'])->first();
-
-        if(!$store){
+    
+    
+    public function showStoresType(Request $request) {
+        try {
+            $type = $request->input('type');
+            
+            $stores = Store::where('store_type', $type)->get();
+    
+            $language = $request->input('lang', 'en');  
+    
+            
+            $translatedStores = $stores->map(function ($store) use ($language) {
+                return [
+                    'id' => $store->id,
+                    'name' => $store->name ? GoogleTranslate::trans($store->name, $language) : '',  
+                    'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',  
+                    'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '', 
+                    'created_at' => $store->created_at,
+                    'updated_at' => $store->updated_at,
+                ];
+            });
+    
             return response([
-                'error' => 'store not found'
+                'stores' => $translatedStores,
+            ], 200);
+    
+        } catch (\Exception $e) {
+            return response([
+                'error' => 'something happened with stores showing',
+                'message' => $e->getMessage(),
             ], 403);
         }
-
-        $store->update($fields);
-
-        return response([], 200);
     }
+    
 }
