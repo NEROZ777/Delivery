@@ -9,13 +9,13 @@ class TranslateController extends Controller
 {
     public function translateText()
     {
-        // إعداد GoogleTranslate لتحديد اللغة المطلوبة (مثل: الفرنسية)
-        $tr = new GoogleTranslate('fr'); // يمكنك تغيير 'fr' إلى أي لغة تريد الترجمة إليها
+        
+        $tr = new GoogleTranslate('fr'); 
     
-        // النص المراد ترجمته
+        
         $translatedText = $tr->translate('Hello, world!');
     
-        // عرض النص المترجم
+        
         return view('translation', ['translatedText' => $translatedText]);
     }
     

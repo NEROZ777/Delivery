@@ -22,7 +22,7 @@ class ProductController extends Controller implements HasMiddleware
     public function createProduct(Request $request) 
 { 
     try { 
-        // التحقق من صحة البيانات
+        
         $validated = $request->validate([ 
             'name' => 'required|string|max:255', 
             'description' => 'nullable|string', 
