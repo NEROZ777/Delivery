@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->integer('phone_number');
             $table->string('password');
-            $table->string('profile_image')->default('images/1735403780_Wuthering Waves   10_2_2024 12_36_11 PM.png')->change();
+            $table->string('profile_image')->nullable();
             $table->string('gendre')->nullable();
             $table->string('location')->nullable();
             $table->string('birth_date')->nullable();

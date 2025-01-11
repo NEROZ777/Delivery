@@ -82,8 +82,7 @@ class CartController extends Controller implements HasMiddleware
         try {
             $fields = $request->validate([
                 'order_id' => 'required|exists:carts,id',
-                'quantity' => 'sometimes|integer|min:1', // Ensure quantity is positive
-                'deliver_date' => 'sometimes',
+                'quantity' => 'sometimes|integer|min:1',
                 'location' => 'sometimes'
             ]);
 
@@ -128,8 +127,8 @@ class CartController extends Controller implements HasMiddleware
 
             return response([
                 'message' => 'order updated!',
-                200
-            ]);
+            ], 200);
+            
 
         } catch (\Exception $e) {
             return response()->json([
