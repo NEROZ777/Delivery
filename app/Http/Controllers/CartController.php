@@ -5,11 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class CartController extends Controller
+class CartController extends Controller implements HasMiddleware
 {
+    // This function sets this controller authorizable
+    public static function middleware() {
+        return [
+            new Middleware('auth:sanctum', except: [])
+        ];
+    }
+
     // This function to add request
     public function addToCart(Request $request)
     {
@@ -172,7 +181,60 @@ class CartController extends Controller
     }
 
     // This function to get all user's orders
-    public function getOrders(Request $request) {
+    static public function getOrders() {
+        try {
+            $user = auth('sanctum')->user();
+
+            if(!$user) {
+                return response([
+                    'message' => 'user not found'
+                ], 403);
+            }
+
+            
+            $orders = Cart::where('user_id', $user->id)
+            ->join('products', 'carts.product_id', '=', 'products.id')
+            ->join('stores', 'products.store_id', '=', 'stores.id')
+            ->select(
+                'carts.quantity',
+                          'carts.created_at as order_date',
+                          'carts.price as price',
+                          'carts.service_cost as service_cost',
+                          DB::raw('carts.price + carts.service_cost as total_cost'),
+                          'products.id as id',
+                          'products.name as title',
+                          'products.price as product_price',
+                          'products.description as description',
+                          'products.quantity as product_quantity',
+                          'products.store_id as store_id',
+                          'stores.store_name as store_name',
+                          'products.average_rating as product_average_rating',
+                          'products.ingredients as product_ingredients',
+                          'products.image_url as imageUrl'
+                          )
+                          ->get();
+            $total = $orders->sum('total_cost');
+            $total = number_format($total, 2, '.', '');
+
+            if(!$orders) {
+                return response([
+                    'message' => 'no orders found'
+                ], 403);
+            }
+
+            return response([
+                'orders' => $orders,
+                'total' => $total
+            ], 200);
+        } catch(\Exception $e) {
+            return response([
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    // This function to get all user's orders
+    static public function getOrdersReturn() {
         try {
             $user = auth('sanctum')->user();
 
@@ -210,9 +272,7 @@ class CartController extends Controller
                 ], 403);
             }
 
-            return response([
-                'orders' => $orders
-            ], 200);
+            return $orders;
         } catch(\Exception $e) {
             return response([
                 'message' => $e->getMessage()
@@ -221,25 +281,5 @@ class CartController extends Controller
     }
 
     // This function pay for the orders (goods in the cart)
-    public function pay(Request $request) {
-        try {
-            $fields = CartController::getOrders($request);
     
-            $orders = $fields['orders'];
-
-            if(!$orders) {
-                return response([
-                    'message' => 'no orders has found'
-                ], 403);
-            }
-    
-            $totalPrice = 0;
-    
-            foreach($orders as $order) {
-                $totalPrice += $order->price;
-            }
-        } catch(\Exception $e) {
-
-        }
-    }
 }

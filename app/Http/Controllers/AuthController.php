@@ -21,7 +21,8 @@ class AuthController extends Controller
                 'last_name' => 'required|min:2|max:255',
                 'email' => 'required|email|unique:users',
                 'phone_number' => 'required|numeric|regex:/^09\d{8}$/|unique:users',
-                'password' => 'required|min:6|confirmed'
+                'password' => 'required|min:6|confirmed',
+                'location' => 'sometimes|min:1'
             ]);
     
             $user = User::create($fields);

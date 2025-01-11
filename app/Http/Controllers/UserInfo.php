@@ -22,7 +22,7 @@ class UserInfo extends Controller implements HasMiddleware
     // This function to accept the uploaded image by the user and store it within the project directory
     public function uploadImage(Request $request) {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:15000'
         ]);
 
         if($request->hasFile('image')){ 
@@ -57,8 +57,8 @@ class UserInfo extends Controller implements HasMiddleware
     public function registerComp(Request $request) {
         try {
             $fields = $request->validate([
-                'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096',
-                'gendre' => 'required|in:male,female',
+                'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:15000',
+                'gendre' => 'required|in:male,female,Engineer,Bashar AlKalb',
                 'location' => 'required',
                 'birth_date' => 'required'
             ]);

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\UserInfo;
 use App\Http\Controllers\ProductController;
 
@@ -44,7 +45,7 @@ Route::post('/show_product_by_store', [ProductController::class, 'ShowProductByS
 Route::post('add_to_cart', [CartController::class, 'addToCart']);
 Route::post('/update_order', [CartController::class, 'updateOrder']);
 Route::post('/delete_order', [CartController::class, 'deleteOrder']);
-Route::post('/get_orders', [CartController::class, 'getOrders']);
+Route::get('/get_orders', [CartController::class, 'getOrders']);
 
 // Favourites routes
 Route::post('/add_to_favourite', [UserInfo::class, 'addToFav']);
@@ -58,4 +59,7 @@ Route::post('/product_rating', [ProductRatingController1::class, 'store'])->midd
 Route::post('/store_rating', [StoreRatingController::class, 'storeing'])->middleware('auth:sanctum');
 Route::post('/destroy_product_rating', [ProductRatingController1::class, 'destroy'])->middleware('auth:sanctum');
 Route::post('/destroy_stor_rating', [StoreRatingController::class, 'destroy'])->middleware('auth:sanctum');
+
+// Logs routes
+Route::post('/pay', [LogController::class, 'pay']);
 
