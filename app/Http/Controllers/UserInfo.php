@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -90,6 +92,55 @@ class UserInfo extends Controller implements HasMiddleware
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
+            ], 403);
+        }
+    }
+
+    // This function to edit profile
+    public function editProfile(Request $request) {
+        try {
+            $fields = $request->validate([
+                'first_name' => 'sometimes',
+                'last_name' => 'sometimes',
+                'profile_image' => 'sometimes',
+                'location' => 'sometimes',
+                'email' => 'sometimes|email'
+            ]);
+
+            $user = auth('sanctum')->user();
+
+            if(!$user || !($user instanceof \App\Models\User)) {
+                return response([
+                    'message' => 'unauthorized'
+                ], 401);
+            }
+
+            $user->User::fill($fields);
+            
+            if ($request->hasFile('profile_image')) {
+                $path = public_path('users_profile_images');
+                if (!File::exists($path)) {
+                    File::makeDirectory($path, 0755, true);
+                }
+    
+                $originalName = pathinfo($request->file('profile_image')->getClientOriginalName(), PATHINFO_FILENAME);
+                $imageName = time() . '_' . Str::slug($originalName) . '.' . $request->file('profile_image')->getClientOriginalExtension();
+    
+                $request->file('profile_image')->move($path, $imageName);
+    
+                // Update the profile_image field with the uploaded file path
+                $user->profile_image = 'users_profile_images/' . $imageName;
+            }
+
+            $user->save();
+
+            return response([
+                'message' => 'profile updated'
+            ], 200);
+        } catch(\Exception $e) {
+            return response([
+                'message' => 'cannot update',
+                'error' => $e->getMessage()
             ], 403);
         }
     }

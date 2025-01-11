@@ -29,7 +29,7 @@ class CartController extends Controller implements HasMiddleware
                 'service_cost' => 'sometimes|numeric|min:0'
             ]);
 
-            $cost = 0.00;
+            $cost = 1.00;
 
             if(isset($fields['service_cost'])) {
                 $cost = $fields['service_cost'];
@@ -84,7 +84,6 @@ class CartController extends Controller implements HasMiddleware
                 'order_id' => 'required|exists:carts,id',
                 'quantity' => 'sometimes|integer|min:1', // Ensure quantity is positive
                 'deliver_date' => 'sometimes',
-                'quantity_type' => 'required_if:quantity,true|in:increase,decrease',
                 'location' => 'sometimes'
             ]);
 
@@ -106,36 +105,23 @@ class CartController extends Controller implements HasMiddleware
                 ]);
             }
 
-            if(isset($fields['quantity'])) {
-                switch($fields['quantity_type']) {
-                    case 'increase': 
-                        $newQuantity = $order->quantity + $fields['quantity'];
-                        if($newQuantity > $product->quantity) {
-                            return response([
-                                'message' => ' can not add, no enough quantity remain!'
-                                , 403
-                            ]); 
-                        }
+            if(isset($fields['quantity']) && $fields['quantity'] > $product->quantity + $order->quantity) {
+                return response([
+                    'message' => 'no enough quantity'
+                ], 403);
+            }
 
-                        $order->quantity = $newQuantity;// Increase the order's quantity
-
-                        $product->quantity -= $fields['quantity'];// Decrease the product's quantity
-
-                        break;
-                    case 'decrease':
-                        $newQuantity = $order->quantity - $fields['quantity'];
-                        $order->quantity = $newQuantity;// Dencrease the order's quantity
-
-                        $product->quantity += $fields['quantity'];// Increase the product's quantity
-
-                        break;
-                }
+            if (isset($fields['quantity'])) {
+                $dif = $fields['quantity'] - $order->quantity;
+                $product->quantity -= $dif; // Decrease or increase product stock accordingly
             }
 
             $order->fill([
                 'deliver_date' => $fields['deliver_date'] ?? $order->deliver_date,
-                'location' => $fields['location'] ?? $order->location
+                'location' => $fields['location'] ?? $order->location,
+                'quantity' => $fields['quantity'] ?? $order->quantity
             ]);
+
 
             $order->save();
             $product->save();
@@ -191,6 +177,7 @@ class CartController extends Controller implements HasMiddleware
                 ], 403);
             }
 
+            $cost = 1.00;
             
             $orders = Cart::where('user_id', $user->id)
             ->join('products', 'carts.product_id', '=', 'products.id')
@@ -200,7 +187,6 @@ class CartController extends Controller implements HasMiddleware
                           'carts.created_at as order_date',
                           'carts.price as price',
                           'carts.service_cost as service_cost',
-                          DB::raw('carts.price + carts.service_cost as total_cost'),
                           'products.id as id',
                           'products.name as title',
                           'products.price as product_price',
@@ -213,7 +199,7 @@ class CartController extends Controller implements HasMiddleware
                           'products.image_url as imageUrl'
                           )
                           ->get();
-            $total = $orders->sum('total_cost');
+            $total = $orders->sum('total_cost') + $cost;
             $total = number_format($total, 2, '.', '');
 
             if(!$orders) {
