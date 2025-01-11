@@ -141,5 +141,62 @@ class StoreController extends Controller implements HasMiddleware
             ], 403);
         }
     }
+    public function findStoreByName(Request $request) {
+        try {
+            
+            $fields = $request->validate([
+                'store_name' => 'required', 
+                'lang' => 'nullable|string|max:5',  
+            ]);
+    
+            
+            $language = $fields['lang'] ?? 'en';
+    
+            
+            $stores = Store::where('store_name', 'like', '%' . $fields['store_name'] . '%')
+                            ->orderByRaw('COALESCE(store_rate, 0) DESC')
+                            ->get();
+    
+            
+            if ($stores->isEmpty()) {
+                $message = GoogleTranslate::trans('no stores found', $language);  
+                return response([
+                    'message' => $message,
+                ], 403);
+            }
+    
+            
+            $message = GoogleTranslate::trans('the store has been found', $language);
+    
+
+            $translatedStores = $stores->map(function ($item) use ($language) {
+                return [
+                    'store_name' => $item->store_name,
+                    'store_type' => $item->store_type,
+                    'store_image' => $item->store_image,
+                    'likes' => $item->likes,
+                    'location' => $item->location,
+                    'cuisine' => $item->cuisine,
+                    'dishes' => $item->dishes,
+                    'average_rating' => $item->average_rating,
+                    'image_url' => $item->image_url,
+                   // 'image' => $item->image,
+                ];
+            });
+    
+            return response([
+                'message' => $message,
+                'store' => $translatedStores,  
+            ], 200);
+    
+        } catch (\Exception $e) {
+            $errorMessage = GoogleTranslate::trans('error happened while searching for the store', $fields['lang'] ?? 'en');
+            return response([
+                'error' => $errorMessage,
+                'message' => $e->getMessage(),
+            ], 403);
+        }
+    }
+    
     
 }

@@ -167,7 +167,9 @@ public function deleteProduct(Request $request)
             $language = $fields['lang'] ?? 'en';
     
             
-            $product = Product::where('name', 'like', '%' . $fields['product_name'] . '%')->get();
+            $product = Product::where('name', 'like', '%' . $fields['product_name'] . '%')
+                                ->orderByRaw('COALESCE(average_rating, 0) DESC')
+                                ->get();
     
             
             if ($product->isEmpty()) {
@@ -189,12 +191,12 @@ public function deleteProduct(Request $request)
                     'ingredients' => GoogleTranslate::trans($item->ingredients, $language),  
                     'price' => $item->price,
                     'quantity' => $item->quantity,
-                    'store_id' => $item->store_id,
+                    'store_name' =>GoogleTranslate::trans($item->store->store_name),
                     'average_rating' => $item->average_rating,
                     'image_url' => $item->image_url,
-                    'created_at' => $item->created_at,
-                    'updated_at' => $item->updated_at,
-                    'image' => $item->image,
+                 //   'created_at' => $item->created_at,
+                   // 'updated_at' => $item->updated_at,
+                  //  'image' => $item->image,
                 ];
             });
     
@@ -227,6 +229,7 @@ public function deleteProduct(Request $request)
             $language = $fields['lang'] ?? 'en';
     
             $product = Product::where('store_id', $fields['store_id'])
+            ->orderByRaw('COALESCE(average_rating, 0) DESC')    
                 ->where('name', 'like', '%' . $fields['product_name'] . '%')->get();
     
             

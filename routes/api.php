@@ -31,6 +31,8 @@ Route::post('/create_store', [StoreController::class, 'createStore']);
 Route::delete('/delete_store', [StoreController::class, 'deleteStore']);
 Route::post('/show_all_stores', [StoreController::class, 'showAllStores']);
 Route::post('/show_stores_type', [StoreController::class, 'showStoresType']);// انت بتعطيه النوع و هو برجع الستورز من نفس النوع 
+Route::post('/find_store_by_name', [StoreController::class, 'findStoreByName']);
+
 
 // Products routes
 Route::post('/create_product', [ProductController::class, 'createProduct']);
