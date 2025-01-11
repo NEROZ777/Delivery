@@ -18,7 +18,6 @@ class AuthController extends Controller
         $this->ultraMsgService = $ultraMsgService;
     }
 
-    // دالة التسجيل مع إرسال رمز التحقق عبر WhatsApp
     public function register(Request $request)
     {
         try {
@@ -31,13 +30,13 @@ class AuthController extends Controller
                 'location' => 'sometimes|min:1'
             ]);
 
-            // إنشاء المستخدم الجديد
+            
             $user = User::create($fields);
 
-            // توليد رمز تحقق عشوائي
+            
             $verificationCode = rand(1000, 9999);
 
-            // تخزين رمز التحقق في قاعدة البيانات
+            
             VerificationCode::create([
                 'user_id' => $user->id,
                 'code' => $verificationCode,
@@ -45,7 +44,7 @@ class AuthController extends Controller
                 'used' => false
             ]);
 
-            // إرسال رسالة WhatsApp للمستخدم
+            
             $message = "Your verification code is: $verificationCode";
             $phoneNumber = preg_replace('/[^0-9+]/', '', $user->phone_number);
 
@@ -67,7 +66,7 @@ class AuthController extends Controller
         }
     }
 
-    // دالة لتسجيل الدخول
+    
     public function login(Request $request)
     {
         try {
@@ -101,7 +100,7 @@ class AuthController extends Controller
         }
     }
     
-    // دالة لتسجيل الخروج
+    
     public function logout(Request $request)
     {
         try {
@@ -122,15 +121,15 @@ class AuthController extends Controller
 
     public function testSendMessage()
     {
-        // تنسيق الرقم (بافتراض أنه رقم سوري)
+        
         $phoneNumber = '0953933942';
         $phoneNumber = preg_replace('/[^0-9+]/', '', $phoneNumber);
         $phoneNumber = '+963' . substr($phoneNumber, 1);
 
-        // الرسالة
+        
         $message = 'هذه رسالة اختبار عبر WhatsApp باستخدام UltraMsg.';
 
-        // إرسال الرسالة
+        
         $response = $this->ultraMsgService->sendMessage($phoneNumber, $message);
 dd($response);
     } 

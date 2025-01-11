@@ -10,14 +10,14 @@ use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class StoreController extends Controller implements HasMiddleware
 {
-    // This function to make this functions autherisable 
+    
     public static function middleware() {
         return [
             new Middleware('auth:sanctum', except: ['showAllStores'])
         ];
     }
 
-    // This function to create a new store
+    
     public function createStore(Request $request) {
         try {
             $fields = $request->validate([
@@ -79,7 +79,7 @@ class StoreController extends Controller implements HasMiddleware
     
 
 
-    // This function to show the all stores
+    
     public function showAllStores(Request $request) {
         try {
             $stores = Store::all();

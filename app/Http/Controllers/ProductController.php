@@ -11,14 +11,14 @@ use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class ProductController extends Controller implements HasMiddleware
 {
-    // This function to make this functions authorisable.
+    
     public static function middleware() {
         return [
             new Middleware('auth:sanctum', except: [])
         ];
     }
 
-    // This function to create a product
+    
     public function createProduct(Request $request) 
 { 
     try { 
