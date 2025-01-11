@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -16,15 +17,16 @@ class CartController extends Controller
             $fields = $request->validate([
                 'product_id' => 'required|exists:products,id',
                 'quantity' => 'required|integer|min:1',
-                'deliver_date' => 'required',
-                'location' => 'sometimes'
+                'service_cost' => 'sometimes|numeric|min:0'
             ]);
+
+            $cost = 0.00;
+
+            if(isset($fields['service_cost'])) {
+                $cost = $fields['service_cost'];
+            }
             
             $user = auth('sanctum')->user();
-
-            if(!isset($fields['location'])) {
-                $fields['location'] = $user->location;
-            }
     
             $product = Product::find($fields['product_id']);
     
@@ -45,11 +47,11 @@ class CartController extends Controller
             } else {
                 $price = $product->price * $fields['quantity'];
                 Cart::create([
+                    'service_cost' => $cost,
                     'product_id' => $fields['product_id'],
                     'quantity' => $fields['quantity'],
                     'user_id' => $user->id,
-                    'location' => $fields['location'],
-                    'price' => $price
+                    'price' => $price 
                 ]);
             }
     
@@ -180,7 +182,27 @@ class CartController extends Controller
                 ], 403);
             }
 
-            $orders = Cart::where('user_id', $user->id)->get();
+            $orders = Cart::where('user_id', $user->id)
+                      ->join('products', 'carts.product_id', '=', 'products.id')
+                      ->join('stores', 'products.store_id', '=', 'stores.id')
+                      ->select(
+                          'carts.quantity',
+                          'carts.created_at as order_date',
+                          'carts.price as price',
+                          'carts.service_cost as service_cost',
+                          DB::raw('carts.price + carts.service_cost as total_cost'),
+                          'products.id as id',
+                          'products.name as title',
+                          'products.price as product_price',
+                          'products.description as description',
+                          'products.quantity as product_quantity',
+                          'products.store_id as store_id',
+                          'stores.store_name as store_name',
+                          'products.average_rating as product_average_rating',
+                          'products.ingredients as product_ingredients',
+                          'products.image_url as imageUrl'
+                      )
+                      ->get();
 
             if(!$orders) {
                 return response([
