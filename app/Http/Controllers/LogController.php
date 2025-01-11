@@ -62,4 +62,9 @@ class LogController extends Controller implements HasMiddleware
             ], 403);
         }
     }
+
+    // This function to get the invoice
+    public function invoice() {
+        
+    }
 }

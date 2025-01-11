@@ -69,4 +69,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(StoreRating::class);
     }
+    // داخل نموذج User (app/Models/User.php)
+public function verificationCodes()
+{
+    return $this->hasMany(VerificationCode::class, 'phone_number', 'phone_number')->onDelete('cascade');
+}
+
 }

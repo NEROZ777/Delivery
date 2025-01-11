@@ -9,7 +9,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\UserInfo;
 use App\Http\Controllers\ProductController;
-
+use App\Services\UltraMsgService;
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\ProductRatingController1;
 use App\Http\Controllers\StoreRatingController;
 
@@ -25,6 +26,15 @@ Route::post('/logout', [AuthController::class, 'logout'
 Route::post('/upload_profile_image', [UserInfo::class, 'uploadImage'])->middleware('auth:sanctum');
 Route::post('/register_complement', [UserInfo::class, 'registerComp']);
 Route::post('/user_info', [UserInfo::class, 'userInfo']);
+Route::post('verify_code', [AuthController::class, 'verifyCode']);
+Route::post('/test-send-message', [AuthController::class, 'testSendMessage']);
+
+
+
+
+
+
+
 
 // Store routes
 Route::post('/create_store', [StoreController::class, 'createStore']);
