@@ -90,7 +90,7 @@ class StoreController extends Controller implements HasMiddleware
             $translatedStores = $stores->map(function ($store) use ($language) {
                 return [
                     'id' => $store->id,
-                    'name' => $store->store_name ? GoogleTranslate::trans($store->store_name, $language) : '',
+                    'store_name' => $store->store_name ? GoogleTranslate::trans($store->store_name, $language) : '',
                    // 'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',
                     'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '',
                     'store_image' => $store->store_image ?? '', 
@@ -128,7 +128,7 @@ class StoreController extends Controller implements HasMiddleware
             $translatedStores = $stores->map(function ($store) use ($language) {
                 return [
                     'id' => $store->id,
-                    'name' => $store->store_name ? GoogleTranslate::trans($store->store_name, $language) : '',
+                    'store_name' => $store->store_name ? GoogleTranslate::trans($store->store_name, $language) : '',
                    // 'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',
                     'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '',
                     'store_image' => $store->store_image ?? '', 
@@ -178,7 +178,7 @@ class StoreController extends Controller implements HasMiddleware
     
             $translatedStores = $stores->map(function ($item) use ($language) {
                 return [
-                    'name' => GoogleTranslate::trans($item->store_name, $language),
+                    'store_name' => GoogleTranslate::trans($item->store_name, $language),
                     'store_type' => GoogleTranslate::trans($item->store_type, $language),
                     'store_image' => $item->store_image,
                     'likes' => GoogleTranslate::trans($item->likes, $language),
