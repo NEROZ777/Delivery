@@ -178,7 +178,7 @@ class StoreController extends Controller implements HasMiddleware
     
             $translatedStores = $stores->map(function ($item) use ($language) {
                 return [
-                    'store_name' => GoogleTranslate::trans($item->store_name, $language),
+                    'name' => GoogleTranslate::trans($item->store_name, $language),
                     'store_type' => GoogleTranslate::trans($item->store_type, $language),
                     'store_image' => $item->store_image,
                     'likes' => GoogleTranslate::trans($item->likes, $language),
