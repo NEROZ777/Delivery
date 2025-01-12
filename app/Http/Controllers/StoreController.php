@@ -90,7 +90,7 @@ class StoreController extends Controller implements HasMiddleware
             $translatedStores = $stores->map(function ($store) use ($language) {
                 return [
                     'id' => $store->id,
-                    'name' => $store->name ? GoogleTranslate::trans($store->store_name, $language) : '',
+                    'name' => $store->store_name ? GoogleTranslate::trans($store->store_name, $language) : '',
                    // 'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',
                     'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '',
                     'store_image' => $store->store_image ?? '', 
@@ -128,7 +128,7 @@ class StoreController extends Controller implements HasMiddleware
             $translatedStores = $stores->map(function ($store) use ($language) {
                 return [
                     'id' => $store->id,
-                    'name' => $store->name ? GoogleTranslate::trans($store->store_name, $language) : '',
+                    'name' => $store->store_name ? GoogleTranslate::trans($store->store_name, $language) : '',
                    // 'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',
                     'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '',
                     'store_image' => $store->store_image ?? '', 
@@ -137,8 +137,8 @@ class StoreController extends Controller implements HasMiddleware
                     'cuisine' => $store->cuisine ? GoogleTranslate::trans($store->cuisine, $language) : '', 
                     'dishes' => $store->dishes ? GoogleTranslate::trans($store->dishes, $language) : '', 
                     'average_rating' => $store->average_rating ?? null, 
-                    'created_at' => $store->created_at,
-                    'updated_at' => $store->updated_at,
+                   // 'created_at' => $store->created_at,
+                   // 'updated_at' => $store->updated_at,
                 ];
             });
     
