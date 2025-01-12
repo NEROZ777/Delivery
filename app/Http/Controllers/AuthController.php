@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    protected $ultraMsgService;
+    // protected $ultraMsgService;
 
-    public function __construct(UltraMsgService $ultraMsgService)
-    {
-        $this->ultraMsgService = $ultraMsgService;
-    }
+    // public function __construct(UltraMsgService $ultraMsgService)
+    // {
+    //     $this->ultraMsgService = $ultraMsgService;
+    // }
 
     // دالة التسجيل مع إرسال رمز التحقق عبر WhatsApp
     // public function register(Request $request)
@@ -148,19 +148,19 @@ class AuthController extends Controller
     }
  
 
-    public function testSendMessage()
-    {
-        // تنسيق الرقم (بافتراض أنه رقم سوري)
-        $phoneNumber = '0953933942';
-        $phoneNumber = preg_replace('/[^0-9+]/', '', $phoneNumber);
-        $phoneNumber = '+963' . substr($phoneNumber, 1);
+//     public function testSendMessage()
+//     {
+//         // تنسيق الرقم (بافتراض أنه رقم سوري)
+//         $phoneNumber = '0953933942';
+//         $phoneNumber = preg_replace('/[^0-9+]/', '', $phoneNumber);
+//         $phoneNumber = '+963' . substr($phoneNumber, 1);
 
-        // الرسالة
-        $message = 'هذه رسالة اختبار عبر WhatsApp باستخدام UltraMsg.';
+//         // الرسالة
+//         $message = 'هذه رسالة اختبار عبر WhatsApp باستخدام UltraMsg.';
 
-        // إرسال الرسالة
-        $response = $this->ultraMsgService->sendMessage($phoneNumber, $message);
-dd($response);
-    } 
+//         // إرسال الرسالة
+//         $response = $this->ultraMsgService->sendMessage($phoneNumber, $message);
+// dd($response);
+//     } 
 }
 

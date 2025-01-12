@@ -199,7 +199,7 @@ class CartController extends Controller implements HasMiddleware
                           'products.image_url as imageUrl'
                           )
                           ->get();
-            $total = $orders->sum('total_cost') + $cost;
+            $total = $orders->sum('price') + $cost;
             $total = number_format($total, 2, '.', '');
 
             if(!$orders) {
@@ -266,6 +266,9 @@ class CartController extends Controller implements HasMiddleware
         }
     }
 
-    // This function pay for the orders (goods in the cart)
+    // This functionn to delete all orders for specified user
+    public static function clearUserCart($userId) {
+        Cart::where('user_id', $userId)->delete();
+    }
     
 }

@@ -54,6 +54,8 @@ class LogController extends Controller implements HasMiddleware
 
             Log::create($log);
 
+            CartController::clearUserCart($user->id);
+
             return response([
                 'message' => 'pay done, waiting for accept'
             ], 200);
