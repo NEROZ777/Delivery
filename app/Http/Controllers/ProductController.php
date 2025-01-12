@@ -164,7 +164,7 @@ public function deleteProduct(Request $request)
             ]);
     
             
-            $language = $fields['lang'] ?? 'en';
+            //$language = $fields['lang'] ?? 'en';
     
             
             $product = Product::where('name', 'like', '%' . $fields['product_name'] . '%')
@@ -173,36 +173,35 @@ public function deleteProduct(Request $request)
     
             
             if ($product->isEmpty()) {
-                $message = GoogleTranslate::trans('no products has found', $language);  
+                //$message = GoogleTranslate::trans('no products has found', $language);  
                 return response([
-                    'message' => $message,
+                    'message' => 'no products has found',
                 ], 403);
             }
     
 
-            $message = GoogleTranslate::trans('the product has found', $language);
+            //$message = GoogleTranslate::trans('the product has found', $language);
     
             
-            $translatedProducts = $product->map(function ($item) use ($language) {
-                return [
-                    'id' => $item->id,
-                    'title' => GoogleTranslate::trans($item->name, $language),  
-                    'description' => GoogleTranslate::trans($item->description, $language),  
-                    'ingredients' => GoogleTranslate::trans($item->ingredients, $language),  
-                    'price' => $item->price,
-                    'quantity' => $item->quantity,
-                    'store_name' =>GoogleTranslate::trans($item->store->store_name),
-                    'average_rating' => $item->average_rating,
-                    'image_url' => $item->image_url,
-                 //   'created_at' => $item->created_at,
-                   // 'updated_at' => $item->updated_at,
-                  //  'image' => $item->image,
-                ];
-            });
+            // $translatedProducts = $product->map(function ($item) use ($language) {
+            //     return [
+            //         'id' => $item->id,
+            //         'title' => GoogleTranslate::trans($item->name, $language),  
+            //         'description' => GoogleTranslate::trans($item->description, $language),  
+            //         'ingredients' => GoogleTranslate::trans($item->ingredients, $language),  
+            //         'price' => $item->price,
+            //         'quantity' => $item->quantity,
+            //         'store_name' =>GoogleTranslate::trans($item->store->store_name),
+            //         'average_rating' => $item->average_rating,
+            //         'image_url' => $item->image_url,
+            //      //   'created_at' => $item->created_at,
+            //        // 'updated_at' => $item->updated_at,
+            //       //  'image' => $item->image,
+            //     ];
+            // });
     
             return response([
-                'message' => $message,
-                'product' => $translatedProducts,  
+                'product' => $product,  
             ], 200);
         } catch (\Exception $e) {
             
@@ -226,7 +225,7 @@ public function deleteProduct(Request $request)
                 'lang' => 'nullable|string|max:5',
             ]);
     
-            $language = $fields['lang'] ?? 'en';
+            //$language = $fields['lang'] ?? 'en';
     
             $product = Product::where('store_id', $fields['store_id'])
             ->orderByRaw('COALESCE(average_rating, 0) DESC')    
@@ -234,33 +233,32 @@ public function deleteProduct(Request $request)
     
             
             if ($product->isEmpty()) {
-                $message = GoogleTranslate::trans('no products has found', $language);
+                //$message = GoogleTranslate::trans('no products has found', $language);
                 return response([
-                    'message' => $message,
+                    'message' => 'no products has found',
                 ], 403);
             }
     
             
-            $message = GoogleTranslate::trans('the product has found', $language);
+            //$message = GoogleTranslate::trans('the product has found', $language);
     
             
-            $formatedProducts = $product->map(function($item) use ($language) {
-                return [
-                    'id' => $item->id,
-                    'title' => $language != 'en' ? GoogleTranslate::trans($item->name, $language) : $item->name,
-                    'description' => $language != 'en' ? GoogleTranslate::trans($item->description, $language) : $item->description,
-                    'ingredients' => $language != 'en' ? GoogleTranslate::trans($item->ingredients, $language) : $item->ingredients,
-                    'price' => number_format($item->price, 2) . ' $',
-                    'quantity' => $item->quantity,
-                    'store_id' => $item->store_id,
-                    'average_rating' => $item->average_rating,
-                    'image_url' => $item->image_url,
-                ];
-            });
+            // $formatedProducts = $product->map(function($item) use ($language) {
+            //     return [
+            //         'id' => $item->id,
+            //         'title' => $language != 'en' ? GoogleTranslate::trans($item->name, $language) : $item->name,
+            //         'description' => $language != 'en' ? GoogleTranslate::trans($item->description, $language) : $item->description,
+            //         'ingredients' => $language != 'en' ? GoogleTranslate::trans($item->ingredients, $language) : $item->ingredients,
+            //         'price' => number_format($item->price, 2) . ' $',
+            //         'quantity' => $item->quantity,
+            //         'store_id' => $item->store_id,
+            //         'average_rating' => $item->average_rating,
+            //         'image_url' => $item->image_url,
+            //     ];
+            // });
     
             return response([
-                'message' => $message,
-                'product' => $formatedProducts,  
+                'product' => $product
             ], 200);
         } catch (\Exception $e) {
             
@@ -283,7 +281,7 @@ public function ShowProductByStore(Request $request) {
         ]);
 
         
-        $language = $fields['lang'] ?? 'en';
+        //$language = $fields['lang'] ?? 'en';
 
         
         $store = Store::where('store_name', $fields['store_name'])->first();
@@ -304,25 +302,25 @@ public function ShowProductByStore(Request $request) {
         }
 
         
-        $formatedProducts = $products->map(function($product) use ($store, $language) {
-            $tr = new GoogleTranslate($language);  
+        // $formatedProducts = $products->map(function($product) use ($store, $language) {
+        //     $tr = new GoogleTranslate($language);  
 
-            return [
-                'title' => $tr->translate($product->name),  
-                'description' => $tr->translate($product->description),  
-                'price' => number_format($product->price, 2) . ' $', 
-                'imageUrl' => $product->image_url,
-                'id' => $product->id,
-                'ingredients' => $product->ingredients,
-                'average_rating' => $product->average_rating,
-                'store_id' => $product->store_id,
-                'quantity' => $product->quantity,
-                'store_name' => $store->store_name,
-            ];     
-        });
+        //     return [
+        //         'title' => $tr->translate($product->name),  
+        //         'description' => $tr->translate($product->description),  
+        //         'price' => number_format($product->price, 2) . ' $', 
+        //         'imageUrl' => $product->image_url,
+        //         'id' => $product->id,
+        //         'ingredients' => $product->ingredients,
+        //         'average_rating' => $product->average_rating,
+        //         'store_id' => $product->store_id,
+        //         'quantity' => $product->quantity,
+        //         'store_name' => $store->store_name,
+        //     ];     
+        // });
 
         return response([
-            'data' => $formatedProducts
+            'data' => $products
         ], 200);
 
     } catch(\Exception $e) {
@@ -346,7 +344,7 @@ public function showProducts(Request $request) {
         ]);
 
         
-        $language = $fields['lang'] ?? 'en';
+        //$language = $fields['lang'] ?? 'en';
 
         
         $products = Product::with('store')
@@ -355,25 +353,25 @@ public function showProducts(Request $request) {
                     ->get();
 
         
-        $formatedProducts = $products->map(function($product) use ($language) {
-            $tr = new GoogleTranslate($language);  
+        // $formatedProducts = $products->map(function($product) use ($language) {
+        //     $tr = new GoogleTranslate($language);  
 
-            return [
-                'title' => $tr->translate($product->name),   
-                'description' => $tr->translate($product->description),  
-                'price' => number_format($product->price, 2) . ' $', 
-                'imageUrl' => $product->image_url,
-                'id' => $product->id,
-                'ingredients' => $product->ingredients,
-                'average_rating' => $product->average_rating,
-                'store_id' => $product->store_id,
-                'quantity' => $product->quantity,
-                'store_name' => $product->store->store_name,
-            ];     
-        });
+        //     return [
+        //         'title' => $tr->translate($product->name),   
+        //         'description' => $tr->translate($product->description),  
+        //         'price' => number_format($product->price, 2) . ' $', 
+        //         'imageUrl' => $product->image_url,
+        //         'id' => $product->id,
+        //         'ingredients' => $product->ingredients,
+        //         'average_rating' => $product->average_rating,
+        //         'store_id' => $product->store_id,
+        //         'quantity' => $product->quantity,
+        //         'store_name' => $product->store->store_name,
+        //     ];     
+        // });
 
         return response([
-            'data' => $formatedProducts
+            'data' => $products
         ], 200);
 
     } catch(\Exception $e) {

@@ -8,6 +8,8 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
+use function PHPUnit\Framework\isEmpty;
+
 class StoreController extends Controller implements HasMiddleware
 {
     // This function to make this functions autherisable 
@@ -83,23 +85,15 @@ class StoreController extends Controller implements HasMiddleware
     public function showAllStores(Request $request) {
         try {
             $stores = Store::all();
-            
-            $language = $request->input('lang', 'en');   
-    
 
-            $translatedStores = $stores->map(function ($store) use ($language) {
-                return [
-                    'id' => $store->id,
-                    'name' => $store->name ? GoogleTranslate::trans($store->name, $language) : '',  
-                    'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',  
-                    'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '',
-                    'created_at' => $store->created_at,
-                    'updated_at' => $store->updated_at,
-                ];
-            });
+            if($stores->isEmpty()) {
+                return response([
+                    'message' => 'no stores has found'
+                ], 403);
+            }
     
             return response([
-                'stores' => $translatedStores,
+                'stores' => $stores,
             ], 200);
         } catch (\Exception $e) {
             return response([
@@ -112,26 +106,28 @@ class StoreController extends Controller implements HasMiddleware
     
     public function showStoresType(Request $request) {
         try {
-            $type = $request->input('type');
-            
+            $fields = $request->validate([
+                'store_type' => 'required'
+            ]);
+
+            $type = $fields['store_type']; 
+
+            if(!$type) {
+                return response([
+                    'message' => 'enter the type'
+                ], 403);
+            }
+
             $stores = Store::where('store_type', $type)->get();
-    
-            $language = $request->input('lang', 'en');  
-    
-            
-            $translatedStores = $stores->map(function ($store) use ($language) {
-                return [
-                    'id' => $store->id,
-                    'name' => $store->name ? GoogleTranslate::trans($store->name, $language) : '',  
-                    'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',  
-                    'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '', 
-                    'created_at' => $store->created_at,
-                    'updated_at' => $store->updated_at,
-                ];
-            });
+
+            if($stores->isEmpty()) {
+                return response([
+                    'message' => 'no stores has found'
+                ], 403);
+            }
     
             return response([
-                'stores' => $translatedStores,
+                'stores' => $stores
             ], 200);
     
         } catch (\Exception $e) {
@@ -143,14 +139,13 @@ class StoreController extends Controller implements HasMiddleware
     }
     public function findStoreByName(Request $request) {
         try {
-            
             $fields = $request->validate([
                 'store_name' => 'required', 
                 'lang' => 'nullable|string|max:5',  
             ]);
     
             
-            $language = $fields['lang'] ?? 'en';
+            //$language = $fields['lang'] ?? 'en';
     
             
             $stores = Store::where('store_name', 'like', '%' . $fields['store_name'] . '%')
@@ -159,34 +154,33 @@ class StoreController extends Controller implements HasMiddleware
     
             
             if ($stores->isEmpty()) {
-                $message = GoogleTranslate::trans('no stores found', $language);  
+                //$message = GoogleTranslate::trans('no stores found', $language);  
                 return response([
-                    'message' => $message,
+                    'message' => 'no stores has found',
                 ], 403);
             }
     
             
-            $message = GoogleTranslate::trans('the store has been found', $language);
+            //$message = GoogleTranslate::trans('the store has been found', $language);
     
 
-            $translatedStores = $stores->map(function ($item) use ($language) {
-                return [
-                    'store_name' => $item->store_name,
-                    'store_type' => $item->store_type,
-                    'store_image' => $item->store_image,
-                    'likes' => $item->likes,
-                    'location' => $item->location,
-                    'cuisine' => $item->cuisine,
-                    'dishes' => $item->dishes,
-                    'average_rating' => $item->average_rating,
-                    'image_url' => $item->image_url,
-                   // 'image' => $item->image,
-                ];
-            });
+            // $translatedStores = $stores->map(function ($item) use ($language) {
+            //     return [
+            //         'store_name' => $item->store_name,
+            //         'store_type' => $item->store_type,
+            //         'store_image' => $item->store_image,
+            //         'likes' => $item->likes,
+            //         'location' => $item->location,
+            //         'cuisine' => $item->cuisine,
+            //         'dishes' => $item->dishes,
+            //         'average_rating' => $item->average_rating,
+            //         'image_url' => $item->image_url,
+            //        // 'image' => $item->image,
+            //     ];
+            // });
     
             return response([
-                'message' => $message,
-                'store' => $translatedStores,  
+                'store' => $stores
             ], 200);
     
         } catch (\Exception $e) {
