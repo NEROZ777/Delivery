@@ -82,7 +82,8 @@ class StoreController extends Controller implements HasMiddleware
     
     public function showAllStores(Request $request) {
         try {
-            $stores = Store::all();
+            $stores = Store::orderByRaw('COALESCE(store_rate, 0) DESC')->get();
+
             
             $language = $request->input('lang', 'en');   
     
@@ -120,8 +121,10 @@ class StoreController extends Controller implements HasMiddleware
         try {
             $type = $request->input('type');
             
-            $stores = Store::where('store_type', $type)->get();
-    
+            $stores = Store::where('store_type', $type)
+            ->orderByRaw('COALESCE(store_rate, 0) DESC')
+                            ->get();
+                            
             $language = $request->input('lang', 'en');  
     
             
