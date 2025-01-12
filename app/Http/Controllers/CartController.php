@@ -82,8 +82,7 @@ class CartController extends Controller implements HasMiddleware
         try {
             $fields = $request->validate([
                 'order_id' => 'required|exists:carts,id',
-                'quantity' => 'sometimes|integer|min:1', // Ensure quantity is positive
-                'deliver_date' => 'sometimes',
+                'quantity' => 'sometimes|integer|min:1',
                 'location' => 'sometimes'
             ]);
 
@@ -128,8 +127,8 @@ class CartController extends Controller implements HasMiddleware
 
             return response([
                 'message' => 'order updated!',
-                200
-            ]);
+            ], 200);
+            
 
         } catch (\Exception $e) {
             return response()->json([
@@ -185,6 +184,7 @@ class CartController extends Controller implements HasMiddleware
             ->select(
                 'carts.quantity',
                           'carts.created_at as order_date',
+                          'carts.id as order_id',
                           'carts.price as price',
                           'carts.service_cost as service_cost',
                           'products.id as id',
@@ -199,7 +199,7 @@ class CartController extends Controller implements HasMiddleware
                           'products.image_url as imageUrl'
                           )
                           ->get();
-            $total = $orders->sum('total_cost') + $cost;
+            $total = $orders->sum('price') + $cost;
             $total = number_format($total, 2, '.', '');
 
             if(!$orders) {
@@ -266,6 +266,9 @@ class CartController extends Controller implements HasMiddleware
         }
     }
 
-    // This function pay for the orders (goods in the cart)
+    // This functionn to delete all orders for specified user
+    public static function clearUserCart($userId) {
+        Cart::where('user_id', $userId)->delete();
+    }
     
 }
