@@ -9,7 +9,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\UserInfo;
 use App\Http\Controllers\ProductController;
-
+use App\Services\UltraMsgService;
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\ProductRatingController1;
 use App\Http\Controllers\StoreRatingController;
 
@@ -25,14 +26,27 @@ Route::post('/logout', [AuthController::class, 'logout'
 Route::post('/upload_profile_image', [UserInfo::class, 'uploadImage'])->middleware('auth:sanctum');
 Route::post('/register_complement', [UserInfo::class, 'registerComp']);
 Route::post('/user_info', [UserInfo::class, 'userInfo']);
+Route::post('verify_code', [AuthController::class, 'verifyCode']);
+Route::post('/test-send-message', [AuthController::class, 'testSendMessage']);
+
+
+
+
+
+
+
 
 // Store routes
 Route::post('/create_store', [StoreController::class, 'createStore']);
-Route::get('/show_all_stores', [StoreController::class, 'showAllStores']);
+Route::delete('/delete_store', [StoreController::class, 'deleteStore']);
+Route::post('/show_all_stores', [StoreController::class, 'showAllStores']);
 Route::post('/show_stores_type', [StoreController::class, 'showStoresType']);// انت بتعطيه النوع و هو برجع الستورز من نفس النوع 
+Route::post('/find_store_by_name', [StoreController::class, 'findStoreByName']);
+
 
 // Products routes
 Route::post('/create_product', [ProductController::class, 'createProduct']);
+Route::delete('/delete_product', [ProductController::class, 'deleteProduct']);
 Route::post('/find_product_by_name', [ProductController::class, 'findProductByName']);
 Route::post('/find_product_by_store', [ProductController::class, 'findProductByStore']);
 Route::post('/update_product', [ProductController::class, 'updateProduct']);

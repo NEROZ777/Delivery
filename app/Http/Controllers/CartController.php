@@ -184,6 +184,7 @@ class CartController extends Controller implements HasMiddleware
             ->select(
                 'carts.quantity',
                           'carts.created_at as order_date',
+                          'carts.id as order_id',
                           'carts.price as price',
                           'carts.service_cost as service_cost',
                           'products.id as id',

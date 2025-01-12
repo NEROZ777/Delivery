@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Store;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class ProductController extends Controller implements HasMiddleware
 {
@@ -21,7 +22,7 @@ class ProductController extends Controller implements HasMiddleware
     public function createProduct(Request $request) 
 { 
     try { 
-        // التحقق من صحة البيانات
+        
         $validated = $request->validate([ 
             'name' => 'required|string|max:255', 
             'description' => 'nullable|string', 
@@ -75,6 +76,44 @@ class ProductController extends Controller implements HasMiddleware
         ], 403); 
     } 
 }
+public function deleteProduct(Request $request)
+{
+    try {
+        
+        $id = $request->input('id');
+
+        
+        if (!$id) {
+            return response()->json([
+                'error' => 'Product ID is required',
+            ], 400);
+        }
+
+        
+        $product = Product::find($id);
+
+
+        if (!$product) {
+            return response()->json([
+                'error' => 'Product not found',
+            ], 404);
+        }
+
+        
+        $product->delete();
+
+        return response()->json([
+            'message' => 'Product deleted successfully',
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Product deletion error',
+            'message' => $e->getMessage(),
+        ], 403);
+    }
+}
+
+
 
 
     // This function to update the product
@@ -118,192 +157,234 @@ class ProductController extends Controller implements HasMiddleware
     // This function to find a product by name
     public function findProductByName(Request $request) {
         try {
+            // 
             $fields = $request->validate([
-                'product_name' => 'required'
-            ]); 
-
-            $product = Product::where('name', 'like', '%' . $fields['product_name'] . '%')->get();
-
-            if(!$product) {
+                'product_name' => 'required',
+                'lang' => 'nullable|string|max:5',  
+            ]);
+    
+            
+            $language = $fields['lang'] ?? 'en';
+    
+            
+            $product = Product::where('name', 'like', '%' . $fields['product_name'] . '%')
+                                ->orderByRaw('COALESCE(average_rating, 0) DESC')
+                                ->get();
+    
+            
+            if ($product->isEmpty()) {
+                $message = GoogleTranslate::trans('no products has found', $language);  
                 return response([
-                    'message' => 'no products has found',
+                    'message' => $message,
                 ], 403);
             }
+    
 
+            $message = GoogleTranslate::trans('the product has found', $language);
+    
+            
+            $translatedProducts = $product->map(function ($item) use ($language) {
+                return [
+                    'id' => $item->id,
+                    'title' => GoogleTranslate::trans($item->name, $language),  
+                    'description' => GoogleTranslate::trans($item->description, $language),  
+                    'ingredients' => GoogleTranslate::trans($item->ingredients, $language),  
+                    'price' => $item->price,
+                    'quantity' => $item->quantity,
+                    'store_name' =>GoogleTranslate::trans($item->store->store_name),
+                    'average_rating' => $item->average_rating,
+                    'image_url' => $item->image_url,
+                 //   'created_at' => $item->created_at,
+                   // 'updated_at' => $item->updated_at,
+                  //  'image' => $item->image,
+                ];
+            });
+    
             return response([
-                'message' => 'the product has found',
-                // 'product' => $product,
+                'message' => $message,
+                'product' => $translatedProducts,  
             ], 200);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
+            
+            $errorMessage = GoogleTranslate::trans('error happened while searching for the product', $fields['lang'] ?? 'en');
             return response([
-                'error' => 'error happend while searchin for the product',
+                'error' => $errorMessage,
                 'message' => $e->getMessage(),
             ], 403);
         }
     }
+    
 
     // The function to find a product by name and store name
+    
+
     public function findProductByStore(Request $request) {
         try {
             $fields = $request->validate([
                 'product_name' => 'required',
-                'store_id' => 'required'
-            ]); 
-
-            // $store = Store::where('store_name', $fields['store_name'])->first();
-
-            // if(!$store) {
-            //     return response([
-            //         'message' => 'the store has not found',
-            //     ], 403);
-            // }
-
+                'store_id' => 'required',
+                'lang' => 'nullable|string|max:5',
+            ]);
+    
+            $language = $fields['lang'] ?? 'en';
+    
             $product = Product::where('store_id', $fields['store_id'])
+            ->orderByRaw('COALESCE(average_rating, 0) DESC')    
                 ->where('name', 'like', '%' . $fields['product_name'] . '%')->get();
-
-            if($product->isEmpty()) {
+    
+            
+            if ($product->isEmpty()) {
+                $message = GoogleTranslate::trans('no products has found', $language);
                 return response([
-                    'message' => 'no products has found',
+                    'message' => $message,
                 ], 403);
             }
-
+    
+            
+            $message = GoogleTranslate::trans('the product has found', $language);
+    
+            
+            $formatedProducts = $product->map(function($item) use ($language) {
+                return [
+                    'id' => $item->id,
+                    'title' => $language != 'en' ? GoogleTranslate::trans($item->name, $language) : $item->name,
+                    'description' => $language != 'en' ? GoogleTranslate::trans($item->description, $language) : $item->description,
+                    'ingredients' => $language != 'en' ? GoogleTranslate::trans($item->ingredients, $language) : $item->ingredients,
+                    'price' => number_format($item->price, 2) . ' $',
+                    'quantity' => $item->quantity,
+                    'store_id' => $item->store_id,
+                    'average_rating' => $item->average_rating,
+                    'image_url' => $item->image_url,
+                ];
+            });
+    
             return response([
-                'message' => 'the product has found',
-                'product' => $product,
+                'message' => $message,
+                'product' => $formatedProducts,  
             ], 200);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
+            
+            $errorMessage = GoogleTranslate::trans('error happened while searching for the product', $fields['lang'] ?? 'en');
             return response([
-                'error' => 'error happend while searchin for the product',
+                'error' => $errorMessage,
                 'message' => $e->getMessage(),
             ], 403);
         }
     }
-
-    public function ShowProductByStore(Request $request) {
-        try {
-            $fields = $request->validate([
-                'store_name' => 'required'
-            ]);
     
-
-            $store = Store::where('store_name', $fields['store_name'])->first();
     
-            if (!$store) {
-                return response([
-                    'message' => 'Store not found',
-                ], 404);
-            }
-     
+   
 
-            $products = Product::where('store_id',  $store->id)->get();
+public function ShowProductByStore(Request $request) {
+    try {
+        $fields = $request->validate([
+            'store_name' => 'required',
+            'lang' => 'nullable|string',  
+        ]);
 
-            if($products->isEmpty()) {
-                return response([
-                    'message' => 'no products has found',
-                ], 403);
-            }
-            $formatedProducts=$products->map(function($product)use ($store){
-                
-                return[
-                        'title' => $product->name,
-                        'description' => $product->description,
-                        'price' => number_format($product->price, 2) . ' $', 
-                        'imageUrl' =>$product->image_url,
-                        'id'=>$product->id,
-                        'ingredients'=>$product->ingredients ,
-                        'average_rating' => $product->average_rating,
-                       'store_id' => $product->store_id,
-                       'quantity'=> $product->quantity,
-                       'store_name' => $store->store_name,
-                        
-                ];     
         
+        $language = $fields['lang'] ?? 'en';
+
         
-               });
-               
-               
-                return response([
+        $store = Store::where('store_name', $fields['store_name'])->first();
+
+        if (!$store) {
+            return response([
+                'message' => 'Store not found',
+            ], 404);
+        }
+
         
-                    // 'success'=>true,
-                    'data'=>$formatedProducts
+        $products = Product::where('store_id',  $store->id)->get();
+
+        if($products->isEmpty()) {
+            return response([
+                'message' => 'No products found',
+            ], 403);
+        }
+
         
-                     
-                ],200);
-        
-            }
-            catch(\Exception $e){
+        $formatedProducts = $products->map(function($product) use ($store, $language) {
+            $tr = new GoogleTranslate($language);  
+
+            return [
+                'title' => $tr->translate($product->name),  
+                'description' => $tr->translate($product->description),  
+                'price' => number_format($product->price, 2) . ' $', 
+                'imageUrl' => $product->image_url,
+                'id' => $product->id,
+                'ingredients' => $product->ingredients,
+                'average_rating' => $product->average_rating,
+                'store_id' => $product->store_id,
+                'quantity' => $product->quantity,
+                'store_name' => $store->store_name,
+            ];     
+        });
+
         return response([
-        
-        'success'=>false,
-        'error'=>'something happened with products showing',
-        'message'=>$e->getMessage()
-        
-        
-        ],403);
-        
-        
-        
-            }
+            'data' => $formatedProducts
+        ], 200);
 
-  
+    } catch(\Exception $e) {
+        return response([
+            'success' => false,
+            'error' => 'Something happened while showing products',
+            'message' => $e->getMessage()
+        ], 403);
     }
+}
 
 
     
-    public function showProducts() {
-        // $products = Product::orderBy('id', 'asc')->paginate(10);
-        // return response()->json($products);
-    try{
+
+
+public function showProducts(Request $request) {
+    try {
+        
+        $fields = $request->validate([
+            'lang' => 'nullable|string',  
+        ]);
+
+        
+        $language = $fields['lang'] ?? 'en';
+
+        
         $products = Product::with('store')
                     ->orderByRaw('COALESCE(average_rating, 0) DESC')
-                   ->take(min(10, Product::count()))  // 
-                   ->get();
+                    ->take(min(10, Product::count()))  
+                    ->get();
 
-       
-       $formatedProducts=$products->map(function($product){
-        return[
-                'title' => $product->name,
-                'description' => $product->description,
+        
+        $formatedProducts = $products->map(function($product) use ($language) {
+            $tr = new GoogleTranslate($language);  
+
+            return [
+                'title' => $tr->translate($product->name),   
+                'description' => $tr->translate($product->description),  
                 'price' => number_format($product->price, 2) . ' $', 
-                'imageUrl' =>$product->image_url,
-                'id'=>$product->id,
-                'ingredients'=>$product->ingredients ,
+                'imageUrl' => $product->image_url,
+                'id' => $product->id,
+                'ingredients' => $product->ingredients,
                 'average_rating' => $product->average_rating,
-               'store_id' => $product->store_id,
-               'quantity'=> $product->quantity,
-               'store_name' => $product->store->store_name
-                
-        ];     
+                'store_id' => $product->store_id,
+                'quantity' => $product->quantity,
+                'store_name' => $product->store->store_name,
+            ];     
+        });
 
-
-       });
-       
-       
         return response([
+            'data' => $formatedProducts
+        ], 200);
 
-            // 'success'=>true,
-            'data'=>$formatedProducts
-
-             
-        ],200);
-
+    } catch(\Exception $e) {
+        return response([
+            'success' => false,
+            'error' => 'Something happened while showing products',
+            'message' => $e->getMessage()
+        ], 403);
     }
-    catch(\Exception $e){
-return response([
+}
 
-'success'=>false,
-'error'=>'something happened with products showing',
-'message'=>$e->getMessage()
-
-
-],403);
-
-
-
-    }
-    
-    
-    }
     
 
 }

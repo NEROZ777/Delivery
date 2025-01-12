@@ -19,7 +19,7 @@ return new class extends Migration
              $table->text('ingredients')->nullable();
             $table->decimal('price',10,2);
             $table->integer('quantity');
-            $table->foreignId('store_id')->constrained();
+            $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');
             $table->decimal('average_rating', 5, 2)->nullable();
             $table->string('image_url')->nullable();
             $table->timestamps();
