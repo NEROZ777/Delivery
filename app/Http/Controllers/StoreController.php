@@ -90,14 +90,20 @@ class StoreController extends Controller implements HasMiddleware
             $translatedStores = $stores->map(function ($store) use ($language) {
                 return [
                     'id' => $store->id,
-                    'name' => $store->name ? GoogleTranslate::trans($store->name, $language) : '',  
-                    'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',  
+                    'name' => $store->name ? GoogleTranslate::trans($store->store_name, $language) : '',
+                   // 'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',
                     'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '',
+                    'store_image' => $store->store_image ?? '', 
+                    'likes' => $store->likes ? GoogleTranslate::trans($store->likes, $language) : '', 
+                    'location' => $store->location ? GoogleTranslate::trans($store->location, $language) : '', 
+                    'cuisine' => $store->cuisine ? GoogleTranslate::trans($store->cuisine, $language) : '', 
+                    'dishes' => $store->dishes ? GoogleTranslate::trans($store->dishes, $language) : '', 
+                    'average_rating' => $store->average_rating ?? null, 
                     'created_at' => $store->created_at,
                     'updated_at' => $store->updated_at,
                 ];
             });
-    
+            
             return response([
                 'stores' => $translatedStores,
             ], 200);
@@ -122,9 +128,15 @@ class StoreController extends Controller implements HasMiddleware
             $translatedStores = $stores->map(function ($store) use ($language) {
                 return [
                     'id' => $store->id,
-                    'name' => $store->name ? GoogleTranslate::trans($store->name, $language) : '',  
-                    'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',  
-                    'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '', 
+                    'name' => $store->name ? GoogleTranslate::trans($store->store_name, $language) : '',
+                   // 'description' => $store->description ? GoogleTranslate::trans($store->description, $language) : '',
+                    'store_type' => $store->store_type ? GoogleTranslate::trans($store->store_type, $language) : '',
+                    'store_image' => $store->store_image ?? '', 
+                    'likes' => $store->likes ? GoogleTranslate::trans($store->likes, $language) : '', 
+                    'location' => $store->location ? GoogleTranslate::trans($store->location, $language) : '', 
+                    'cuisine' => $store->cuisine ? GoogleTranslate::trans($store->cuisine, $language) : '', 
+                    'dishes' => $store->dishes ? GoogleTranslate::trans($store->dishes, $language) : '', 
+                    'average_rating' => $store->average_rating ?? null, 
                     'created_at' => $store->created_at,
                     'updated_at' => $store->updated_at,
                 ];
@@ -141,54 +153,47 @@ class StoreController extends Controller implements HasMiddleware
             ], 403);
         }
     }
-    public function findStoreByName(Request $request) {
+    public function findStoreByName(Request $request)
+    {
         try {
-            
             $fields = $request->validate([
-                'store_name' => 'required', 
-                'lang' => 'nullable|string|max:5',  
+                'store_name' => 'required',
+                'lang' => 'nullable|string|max:5',
             ]);
     
-            
             $language = $fields['lang'] ?? 'en';
     
-            
             $stores = Store::where('store_name', 'like', '%' . $fields['store_name'] . '%')
-                            ->orderByRaw('COALESCE(store_rate, 0) DESC')
-                            ->get();
+                ->orderByRaw('COALESCE(store_rate, 0) DESC')
+                ->get();
     
-            
             if ($stores->isEmpty()) {
-                $message = GoogleTranslate::trans('no stores found', $language);  
+                $message = GoogleTranslate::trans('no stores found', $language);
                 return response([
                     'message' => $message,
                 ], 403);
             }
     
-            
             $message = GoogleTranslate::trans('the store has been found', $language);
     
-
             $translatedStores = $stores->map(function ($item) use ($language) {
                 return [
-                    'store_name' => $item->store_name,
-                    'store_type' => $item->store_type,
+                    'store_name' => GoogleTranslate::trans($item->store_name, $language),
+                    'store_type' => GoogleTranslate::trans($item->store_type, $language),
                     'store_image' => $item->store_image,
-                    'likes' => $item->likes,
-                    'location' => $item->location,
-                    'cuisine' => $item->cuisine,
-                    'dishes' => $item->dishes,
-                    'average_rating' => $item->average_rating,
-                    'image_url' => $item->image_url,
-                   // 'image' => $item->image,
+                    'likes' => GoogleTranslate::trans($item->likes, $language),
+                    'location' => GoogleTranslate::trans($item->location, $language),
+                    'cuisine' => GoogleTranslate::trans($item->cuisine, $language),
+                    'dishes' => GoogleTranslate::trans($item->dishes, $language),
+                    'average_rating' => $item->store_rate,
+                    // 'image_url' => $item->image_url,
                 ];
             });
     
             return response([
                 'message' => $message,
-                'store' => $translatedStores,  
+                'store' => $translatedStores,
             ], 200);
-    
         } catch (\Exception $e) {
             $errorMessage = GoogleTranslate::trans('error happened while searching for the store', $fields['lang'] ?? 'en');
             return response([
@@ -197,6 +202,7 @@ class StoreController extends Controller implements HasMiddleware
             ], 403);
         }
     }
+    
     
     
 }

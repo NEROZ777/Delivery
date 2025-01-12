@@ -27,16 +27,18 @@ class AuthController extends Controller
                 'email' => 'required|email|unique:users',
                 'phone_number' => 'required|numeric|regex:/^09\d{8}$/|unique:users',
                 'password' => 'required|min:6|confirmed',
-                'location' => 'sometimes|min:1'
+                'location' => 'sometimes|min:1',
+                'profile_image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:15000'
             ]);
 
-            
+            if ($request->hasFile('profile_image')) {
+                $fields['profile_image'] = $request->file('profile_image')->store('profiles', 'public');
+            }
+
             $user = User::create($fields);
 
-            
             $verificationCode = rand(1000, 9999);
 
-            
             VerificationCode::create([
                 'user_id' => $user->id,
                 'code' => $verificationCode,
@@ -44,11 +46,9 @@ class AuthController extends Controller
                 'used' => false
             ]);
 
-            
             $message = "Your verification code is: $verificationCode";
-            $phoneNumber = preg_replace('/[^0-9+]/', '', $user->phone_number);
+            $phoneNumber = '+963' . substr(preg_replace('/[^0-9+]/', '', $user->phone_number), 1);
 
-            $phoneNumber = '+963' . substr($phoneNumber, 1);  //
             $this->ultraMsgService->sendMessage($phoneNumber, $message);
 
             $token = $user->createToken($request->first_name);
@@ -57,7 +57,6 @@ class AuthController extends Controller
                 'message' => 'SignUp done',
                 'token' => $token->plainTextToken
             ], 200);
-
         } catch (\Exception $e) {
             return response([
                 'error' => 'Registration failed',
@@ -66,7 +65,6 @@ class AuthController extends Controller
         }
     }
 
-    
     public function login(Request $request)
     {
         try {
@@ -99,8 +97,7 @@ class AuthController extends Controller
             ], 403);
         }
     }
-    
-    
+
     public function logout(Request $request)
     {
         try {
@@ -117,21 +114,4 @@ class AuthController extends Controller
             ], 403);
         }
     }
- 
-
-    public function testSendMessage()
-    {
-        
-        $phoneNumber = '0953933942';
-        $phoneNumber = preg_replace('/[^0-9+]/', '', $phoneNumber);
-        $phoneNumber = '+963' . substr($phoneNumber, 1);
-
-        
-        $message = 'هذه رسالة اختبار عبر WhatsApp باستخدام UltraMsg.';
-
-        
-        $response = $this->ultraMsgService->sendMessage($phoneNumber, $message);
-dd($response);
-    } 
 }
-
