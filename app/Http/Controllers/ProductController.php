@@ -201,7 +201,7 @@ public function deleteProduct(Request $request)
             });
     
             return response([
-                'message' => $message,
+                //'message' => $message,
                 'product' => $translatedProducts,  
             ], 200);
         } catch (\Exception $e) {
@@ -259,7 +259,7 @@ public function deleteProduct(Request $request)
             });
     
             return response([
-                'message' => $message,
+             //   'message' => $message,
                 'product' => $formatedProducts,  
             ], 200);
         } catch (\Exception $e) {
