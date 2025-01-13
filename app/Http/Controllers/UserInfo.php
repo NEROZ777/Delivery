@@ -166,8 +166,28 @@ class UserInfo extends Controller implements HasMiddleware
                     'message' => 'cannot find the user'
                 ], 403);
             }
+
+            $query = Favourite::where('user_id', $user->id);
+
+            if (isset($fields['product_id'])) {
+                $query->where('product_id', $fields['product_id']);
+            }
+    
+            if (isset($fields['store_id'])) {
+                $query->where('store_id', $fields['store_id']);
+            }
+
+            $existingFav = $query->first();
+            if ($existingFav) {
+                $existingFav->delete();
+    
+                return response([
+                    'message' => 'removed from favorite'
+                ], 200);
+            }
+
             $fields['user_id'] = $user->id;
-            $fav = Favourite::create($fields);
+            Favourite::create($fields);
 
             return response([
                 'message' => 'added to favourite'
@@ -178,7 +198,7 @@ class UserInfo extends Controller implements HasMiddleware
     }
 
     // This function to remove one item from favourites list
-    public function removeFav(Request $request) {
+    public static function removeFav(Request $request) {
         try {
             $fields = $request->validate([
                 'product_id' => 'required_without:store_id',
