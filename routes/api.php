@@ -31,12 +31,6 @@ Route::post('/test-send-message', [AuthController::class, 'testSendMessage']);
 Route::post('/edit_profile', [UserInfo::class, 'editProfile']);
 
 
-
-
-
-
-
-
 // Store routes
 Route::post('/create_store', [StoreController::class, 'createStore']);
 Route::delete('/delete_store', [StoreController::class, 'deleteStore']);
@@ -54,11 +48,13 @@ Route::post('/update_product', [ProductController::class, 'updateProduct']);
 Route::match(['get', 'post'], 'show_products', [ProductController::class, 'showProducts']);//تابع بيعرض المنتجات بيعرض حسب ال id 
 Route::post('/show_product_by_store', [ProductController::class, 'ShowProductByStore']);
 
+
 // Cart routes
 Route::post('add_to_cart', [CartController::class, 'addToCart']);
 Route::post('/update_order', [CartController::class, 'updateOrder']);
 Route::post('/delete_order', [CartController::class, 'deleteOrder']);
 Route::get('/get_orders', [CartController::class, 'getOrders']);
+
 
 // Favourites routes
 Route::post('/add_to_favourite', [UserInfo::class, 'addToFav']);
@@ -73,9 +69,9 @@ Route::post('/store_rating', [StoreRatingController::class, 'storeing'])->middle
 Route::post('/destroy_product_rating', [ProductRatingController1::class, 'destroy'])->middleware('auth:sanctum');
 Route::post('/destroy_stor_rating', [StoreRatingController::class, 'destroy'])->middleware('auth:sanctum');
 
+
 // Logs routes
 Route::post('/pay', [LogController::class, 'pay']);
 Route::post('/update_order_status', [LogController::class, 'updateOrderStatus']);
 Route::post('/get_log_orders', [LogController::class, 'getAllOrders']);
 Route::post('/get_log_status_orders', [LogController::class, 'getAllOrdersByStatus']);
-

@@ -11,7 +11,7 @@ class StoreRatingController extends Controller
     public function storeing(Request $request)
     {
         $request->validate([
-            'store_id' => 'required|exists:stores,id',  // تعديل التحقق لتوافق اسم الحقل
+            'store_id' => 'required|exists:stores,id',  
             'rating' => 'required|integer|between:0,5',  
         ]);
     
@@ -27,7 +27,7 @@ class StoreRatingController extends Controller
     
             return response()->json(['message' => 'Rating updated successfully.']);
         } else {
-            // إضافة تقييم جديد
+            
             $rating = StoreRating::create([
                 'user_id' => Auth::id(),
                 'store_id' => $request->input('store_id'),
