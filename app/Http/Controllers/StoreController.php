@@ -119,11 +119,14 @@ class StoreController extends Controller implements HasMiddleware
     
     public function showStoresType(Request $request) {
         try {
+            
             $type = $request->input('type');
+            
             
             $stores = Store::where('store_type', $type)
             ->orderByRaw('COALESCE(store_rate, 0) DESC')
                             ->get();
+                          //  dd($stores);
                             
             $language = $request->input('lang', 'en');  
     

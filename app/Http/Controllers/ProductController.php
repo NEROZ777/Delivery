@@ -46,7 +46,7 @@ class ProductController extends Controller implements HasMiddleware
         $validated['store_id'] = $store->id;
 
         $existingProduct = Product::where('name', $validated['name'])
-            ->where('store_id', $validated['store_id'])
+            ->where('store_ ', $validated['store_id'])
             ->where('ingredients', $validated['ingredients'])
             ->where('description', $validated['description'])  
             ->where('price', $validated['price'])  
@@ -222,7 +222,7 @@ public function deleteProduct(Request $request)
         try {
             $fields = $request->validate([
                 'product_name' => 'required',
-                'store_id' => 'required',
+               // 'store_id' => 'required',
                 'lang' => 'nullable|string|max:5',
             ]);
     
