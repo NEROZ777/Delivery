@@ -28,6 +28,7 @@ Route::post('/register_complement', [UserInfo::class, 'registerComp']);
 Route::post('/user_info', [UserInfo::class, 'userInfo']);
 Route::post('verify_code', [AuthController::class, 'verifyCode']);
 Route::post('/test-send-message', [AuthController::class, 'testSendMessage']);
+Route::post('/edit_profile', [UserInfo::class, 'editProfile']);
 
 
 
@@ -74,4 +75,7 @@ Route::post('/destroy_stor_rating', [StoreRatingController::class, 'destroy'])->
 
 // Logs routes
 Route::post('/pay', [LogController::class, 'pay']);
+Route::post('/update_order_status', [LogController::class, 'updateOrderStatus']);
+Route::post('/get_log_orders', [LogController::class, 'getAllOrders']);
+Route::post('/get_log_status_orders', [LogController::class, 'getAllOrdersByStatus']);
 

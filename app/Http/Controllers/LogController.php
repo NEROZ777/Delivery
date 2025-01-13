@@ -83,12 +83,12 @@ class LogController extends Controller implements HasMiddleware
         try {
             $fields = $request->validate([
                 'order_id' => 'required',
-                'status' => 'required'
+                'status' => 'required|in:0, 1, 2'
             ]);
 
             $order = Log::find($fields['order_id']);
 
-            if(isEmpty($order)) {
+            if(!$order) {
                 return response([
                     'message' => 'order didn\'t found'
                 ], 403);
@@ -113,7 +113,7 @@ class LogController extends Controller implements HasMiddleware
         try {
             $orders = Log::all();
 
-            if(isEmpty($orders)) {
+            if($orders->isEmpty()) {
                 return response([
                     'message' => 'no orders has found'
                 ], 403);
@@ -139,7 +139,7 @@ class LogController extends Controller implements HasMiddleware
 
             $orders = Log::where('status', $fields['status'])->get();
 
-            if(isEmpty($orders)) {
+            if($orders->isEmpty()) {
                 return response([
                     'message' => 'no orders has found'
                 ], 403);
