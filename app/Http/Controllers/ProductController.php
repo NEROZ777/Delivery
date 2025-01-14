@@ -366,9 +366,10 @@ public function showProducts(Request $request) {
                 'id' => $product->id,
                 'ingredients' => $product->ingredients,
                 'average_rating' => $product->average_rating,
-                'store_id' => $product->store_id,
+                'store_id' => $product->store->id,
                 'quantity' => $product->quantity,
                 'store_name' => $product->store->store_name,
+
             ];     
         });
 

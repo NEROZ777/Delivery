@@ -192,12 +192,14 @@ class StoreController extends Controller implements HasMiddleware
                     'cuisine' => GoogleTranslate::trans($item->cuisine, $language),
                     'dishes' => GoogleTranslate::trans($item->dishes, $language),
                     'average_rating' => $item->store_rate,
+                    'store_id' => $item->id,
+
                     // 'image_url' => $item->image_url,
                 ];
             });
     
             return response([
-                'message' => $message,
+            //    'message' => $message,
                 'store' => $translatedStores,
             ], 200);
         } catch (\Exception $e) {
