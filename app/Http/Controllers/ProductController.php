@@ -194,6 +194,7 @@ public function deleteProduct(Request $request)
                     'store_name' =>GoogleTranslate::trans($item->store->store_name),
                     'average_rating' => $item->average_rating,
                     'image_url' => $item->image_url,
+                    'store_id' => $item->id
                  //   'created_at' => $item->created_at,
                    // 'updated_at' => $item->updated_at,
                   //  'image' => $item->image,
