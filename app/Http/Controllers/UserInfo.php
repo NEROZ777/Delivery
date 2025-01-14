@@ -115,7 +115,7 @@ class UserInfo extends Controller implements HasMiddleware
                 ], 401);
             }
 
-            $user->User::fill($fields);
+            $user->fill($fields);
             
             if ($request->hasFile('profile_image')) {
                 $path = public_path('users_profile_images');
@@ -166,8 +166,28 @@ class UserInfo extends Controller implements HasMiddleware
                     'message' => 'cannot find the user'
                 ], 403);
             }
+
+            $query = Favourite::where('user_id', $user->id);
+
+            if (isset($fields['product_id'])) {
+                $query->where('product_id', $fields['product_id']);
+            }
+    
+            if (isset($fields['store_id'])) {
+                $query->where('store_id', $fields['store_id']);
+            }
+
+            $existingFav = $query->first();
+            if ($existingFav) {
+                $existingFav->delete();
+    
+                return response([
+                    'message' => 'removed from favorite'
+                ], 200);
+            }
+
             $fields['user_id'] = $user->id;
-            $fav = Favourite::create($fields);
+            Favourite::create($fields);
 
             return response([
                 'message' => 'added to favourite'
@@ -178,10 +198,11 @@ class UserInfo extends Controller implements HasMiddleware
     }
 
     // This function to remove one item from favourites list
-    public function removeFav(Request $request) {
+    public static function removeFav(Request $request) {
         try {
             $fields = $request->validate([
-                'id' => 'required|integer|exists:favourites,id'
+                'product_id' => 'required_without:store_id',
+                'store_id' => 'required_without:product_id'
             ]);
             
             $user = auth('sanctum')->user();
@@ -192,9 +213,17 @@ class UserInfo extends Controller implements HasMiddleware
                 ], 401);
             }
 
-            $fav = Favourite::where('id', $fields['id'])
-                            ->where('user_id', $user->id)
-                            ->first();
+            $query = Favourite::where('user_id', $user->id);
+
+            if(!empty($fields['product_id'])) {
+                $query->where('product_id', $fields['product_id']);
+            }
+
+            if(!empty($fields['store_id'])) {
+                $query->where('store_id', $fields['store_id']);
+            }
+
+            $fav = $query->first();
 
             if(!$fav) {
                 return response([
