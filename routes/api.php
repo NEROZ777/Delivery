@@ -21,6 +21,7 @@ Route::get('/user', function (Request $request) {
 // Authentication and user profile routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/verify_code', [AuthController::class, 'verifyCode']);
+Route::post('/reset_password', [AuthController::class, 'verifyCode'])->middleware('auth:sanctum');
 Route::get('/resend_code', [AuthController::class, 'resendCode'])->middleware('auth:sanctum');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'
