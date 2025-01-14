@@ -20,13 +20,16 @@ Route::get('/user', function (Request $request) {
 
 // Authentication and user profile routes
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/verify_code', [AuthController::class, 'verifyCode']);
+Route::post('/reset_password', [AuthController::class, 'verifyCode'])->middleware('auth:sanctum');
+Route::get('/resend_code', [AuthController::class, 'resendCode'])->middleware('auth:sanctum');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'
 ])->middleware('auth:sanctum');
 Route::post('/upload_profile_image', [UserInfo::class, 'uploadImage'])->middleware('auth:sanctum');
 Route::post('/register_complement', [UserInfo::class, 'registerComp']);
 Route::post('/user_info', [UserInfo::class, 'userInfo']);
-Route::post('verify_code', [AuthController::class, 'verifyCode']);
+Route::post('verify_code', [AuthController::class, 'verifyCode'])->middleware('auth:sanctum');
 Route::post('/test-send-message', [AuthController::class, 'testSendMessage']);
 Route::post('/edit_profile', [UserInfo::class, 'editProfile']);
 
@@ -37,7 +40,7 @@ Route::delete('/delete_store', [StoreController::class, 'deleteStore']);
 Route::post('/show_all_stores', [StoreController::class, 'showAllStores']);
 Route::post('/show_stores_type', [StoreController::class, 'showStoresType']);// انت بتعطيه النوع و هو برجع الستورز من نفس النوع 
 Route::post('/find_store_by_name', [StoreController::class, 'findStoreByName']);
-
+// Route::match(['get', 'post'], '/show_stores_type', [StoreController::class, 'showStoresType']);
 
 // Products routes
 Route::post('/create_product', [ProductController::class, 'createProduct']);

@@ -222,7 +222,7 @@ public function deleteProduct(Request $request)
         try {
             $fields = $request->validate([
                 'product_name' => 'required',
-                'store_id' => 'required',
+               // 'store_id' => 'required',
                 'lang' => 'nullable|string|max:5',
             ]);
     

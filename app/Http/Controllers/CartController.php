@@ -152,6 +152,17 @@ class CartController extends Controller implements HasMiddleware
                 ], 403);
             }
 
+            $product = Product::find($order->product_id);
+
+            if(!$product) {
+                return response([
+                    'message' => 'cannot find the product'
+                ], 403);
+            }
+
+            $product->quantity += $order->quantity;
+
+            $product->save();
             $order->delete();
 
             return response([
@@ -230,15 +241,17 @@ class CartController extends Controller implements HasMiddleware
                 ], 403);
             }
 
+            $cost = 1.00;
+            
             $orders = Cart::where('user_id', $user->id)
-                      ->join('products', 'carts.product_id', '=', 'products.id')
-                      ->join('stores', 'products.store_id', '=', 'stores.id')
-                      ->select(
-                          'carts.quantity',
+            ->join('products', 'carts.product_id', '=', 'products.id')
+            ->join('stores', 'products.store_id', '=', 'stores.id')
+            ->select(
+                'carts.quantity',
                           'carts.created_at as order_date',
+                          'carts.id as order_id',
                           'carts.price as price',
                           'carts.service_cost as service_cost',
-                          DB::raw('carts.price + carts.service_cost as total_cost'),
                           'products.id as id',
                           'products.name as title',
                           'products.price as product_price',
@@ -249,8 +262,10 @@ class CartController extends Controller implements HasMiddleware
                           'products.average_rating as product_average_rating',
                           'products.ingredients as product_ingredients',
                           'products.image_url as imageUrl'
-                      )
-                      ->get();
+                          )
+                          ->get();
+            $total = $orders->sum('price') + $cost;
+            $total = number_format($total, 2, '.', '');
 
             if(!$orders) {
                 return response([
@@ -258,7 +273,10 @@ class CartController extends Controller implements HasMiddleware
                 ], 403);
             }
 
-            return $orders;
+            return [
+                'orders' => $orders,
+                'total' => $total
+            ];
         } catch(\Exception $e) {
             return response([
                 'message' => $e->getMessage()

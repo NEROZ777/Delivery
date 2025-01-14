@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
+            $table->float('total_price')->nullable();
             $table->json('orders');
             $table->integer('status');
             $table->string('location')->nullable();

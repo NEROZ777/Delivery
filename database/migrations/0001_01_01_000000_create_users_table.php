@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('gendre')->nullable();
             $table->string('location')->nullable();
             $table->string('birth_date')->nullable();
+          //  $table->boolean('is_valid')->default(false);
+            $table->string('code')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
