@@ -369,7 +369,7 @@ public function showProducts(Request $request) {
                 'store_id' => $product->store->id,
                 'quantity' => $product->quantity,
                 'store_name' => $product->store->store_name,
-
+                'store_id'=>$product->store->id
             ];     
         });
 
