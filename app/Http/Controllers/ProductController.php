@@ -46,7 +46,7 @@ class ProductController extends Controller implements HasMiddleware
         $validated['store_id'] = $store->id;
 
         $existingProduct = Product::where('name', $validated['name'])
-            ->where('store_ ', $validated['store_id'])
+            ->where('store_id', $validated['store_id'])
             ->where('ingredients', $validated['ingredients'])
             ->where('description', $validated['description'])  
             ->where('price', $validated['price'])  

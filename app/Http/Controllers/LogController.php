@@ -39,7 +39,7 @@ class LogController extends Controller implements HasMiddleware
 
             $orders = CartController::getOrdersReturn();
 
-            if($orders->isEmpty()) {
+            if(isset($ordersData['orders']) && $ordersData['orders']->isEmpty()) {
                 return response([
                     'message' => 'no orders found'
                 ], 403);
@@ -47,7 +47,8 @@ class LogController extends Controller implements HasMiddleware
 
             $log = [
                 'user_id' => $user->id,
-                'orders' => $orders,
+                'total_price' => $orders['total'],
+                'orders' => $orders['orders'],
                 'status' => 0,
                 'location' => $location
             ];

@@ -8,6 +8,7 @@ class Log extends Model
 {
     protected $fillable = [
         'user_id',
+        'total_price',
         'orders',
         'status',
         'location'

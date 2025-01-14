@@ -263,12 +263,12 @@ public function resendCode(Request $request)
 
         
         $message = "Dear $user->first_name, your verification code is: $verificationCode";
-        $phoneNumber = '+963' . preg_replace('/[^0-9+]/', '', $user->phone_number) ;
+        $phoneNumber = '+963' . preg_replace('/[^0-9+]/', '', $user->phone_number);
         $this->ultraMsgService->sendMessage($phoneNumber, $message);
 
         return response([
             // 'message' => 'Verification code resent successfully.',
-            'code' => $verificationCode
+            // 'code' => $verificationCode
         ], 200);
 
     } catch (\Exception $e) {
