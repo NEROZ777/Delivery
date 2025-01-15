@@ -78,3 +78,4 @@ Route::post('/pay', [LogController::class, 'pay']);
 Route::post('/update_order_status', [LogController::class, 'updateOrderStatus']);
 Route::post('/get_log_orders', [LogController::class, 'getAllOrders']);
 Route::post('/get_log_status_orders', [LogController::class, 'getAllOrdersByStatus']);
+Route::post('/cancel_order', [LogController::class, 'cancelOrder']);

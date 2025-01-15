@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Log;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -156,4 +157,47 @@ class LogController extends Controller implements HasMiddleware
             ], 500);
         }
     }
+
+    // This function to cancel an order
+    public function cancelOrder(Request $request) {
+        try {
+            $fields = $request->validate([
+                'order_id' => 'required|exists:logs,id'
+            ]);
+    
+            $order = Log::find($fields['order_id']);
+            
+            if (!$order) {
+                return response([
+                    'message' => 'The order was not found.'
+                ], 404);
+            }
+    
+            $orderItems = json_decode($order->orders, true);
+    
+            foreach ($orderItems as $item) {
+                $product = Product::find($item['id']);
+    
+                if ($product) {
+                    $product->quantity += $item['quantity'];
+                    $product->save();
+                }
+            }
+    
+            $order->delete();
+    
+            return response([
+                'message' => 'The order has been canceled successfully.'
+            ], 200);
+    
+        } catch (\Exception $e) {
+            return response([
+                'message' => 'Failed to cancel the order.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
+
+    
 }
